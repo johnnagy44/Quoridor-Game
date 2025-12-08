@@ -1,0 +1,102 @@
+# =====================
+# Python
+# =====================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+.eggs/
+dist/
+build/
+*.spec
+pip-wheel-metadata/
+.installed.cfg
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+*.env
+*.venv
+*/venv/
+*/.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# =====================
+# PyQt / Qt-related
+# =====================
+
+# Qt Designer compiled files
+*.pyc
+*.qmlc
+*.jsc
+
+# PyQt UI compiler output
+*_ui.py
+*_rc.py
+
+# Qt resource binaries
+*.qrc~
+*.rcc
+*.qm
+
+# QtCreator / QtProject IDE files
+*.pro.user
+*.pro.user.*
+*.qmake.stash
+*.autosave
+
+# PySide / PyQt temp directories
+.qt_for_python/
+
+# PyQt build cache
+__pycache__/
+qtbuild/
+cache/
+
+# =====================
+# OS-specific files
+# =====================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# =====================
+# Editors
+# =====================
+
+# VSCode
+.vscode/
+.history/
+
+# PyCharm / JetBrains
+.idea/
+*.iml
+
+# =====================
+# Logs / temp
+# =====================
+*.log
+*.tmp
+*.swp
+*.swo
+
+# =====================
+# Packaging / distribution
+# =====================
+wheelhouse/
