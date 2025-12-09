@@ -1,31 +1,30 @@
-from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout,QStackedWidget
+from PyQt6.QtCore import Qt
 from .game_window import GameWindow
 from .settings_window import SettingsWindow
+from .main_menu import MainMenu
+from .how_to_play_window import HowToPlayWindow
+
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Main Menu")
+        self.setObjectName("MainWindow")
+        self.setWindowTitle("Quoridor Game - Main Menu")
+        self.setFixedSize(900, 700)
+        self.setContentsMargins(0, 0, 0, 0)
+        #self.setStyleSheet("QWidget { border: 0px; }") 
+        
 
-        layout = QVBoxLayout()
+        self.stack = QStackedWidget()
 
-        btn_game = QPushButton("Start Game")
-        btn_game.clicked.connect(self.open_game)
+        self.main_menu = MainMenu(self.stack)
+        self.how_to_play = HowToPlayWindow(self.stack)
 
-        btn_settings = QPushButton("Settings")
-        btn_settings.clicked.connect(self.open_settings)
+        self.stack.addWidget(self.main_menu)      # index 0
+        self.stack.addWidget(self.how_to_play)    # index 1
 
-        layout.addWidget(btn_game)
-        layout.addWidget(btn_settings)
-        self.setLayout(layout)
+        main_layout = QVBoxLayout(self)
+        main_layout.addWidget(self.stack)
 
-        self.game_win = None
-        self.settings_win = None
-
-    def open_game(self):
-        self.game_win = GameWindow()
-        self.game_win.show()
-
-    def open_settings(self):
-        self.settings_win = SettingsWindow()
-        self.settings_win.show()
+        self.stack.setCurrentIndex(0)

@@ -3,17 +3,41 @@ from PyQt6.QtWidgets import (
     QRadioButton, QLineEdit, QGroupBox, QFormLayout, QButtonGroup
 )
 from PyQt6.QtCore import Qt
-from .board_widget import BoardWidget
+from .neon_board import NeonQuoridorBoard
 from game.game_state import GameState
 
 class GameWindow(QWidget):
     def __init__(self):
         super().__init__()
+        self.load_stylesheet()
         self.setWindowTitle("Quoridor Game")
         self.game_state = GameState()
-        self.board_widget = BoardWidget(self.game_state)
+        self.board_widget = NeonQuoridorBoard()
 
         self.init_ui()
+
+    def load_stylesheet(self):
+        try:
+            with open("ui/quoridor_neon.qss", "r") as f:
+                self.setStyleSheet(f.read())
+        except Exception as e:
+            print("Failed to load stylesheet:", e)
+
+    def sync_board(self):
+        # Update player positions
+        p1 = self.game_state.players[0].pos
+        p2 = self.game_state.players[1].pos
+        self.board_widget.p1_pos = p1
+        self.board_widget.p2_pos = p2
+
+        # Update walls
+        self.board_widget.p1_walls = self.game_state.players[0].walls_pos
+        self.board_widget.p2_walls = self.game_state.players[1].walls_pos
+
+        # Highlight legal moves (optional)
+        self.board_widget.highlight_moves = self.game_state.legal_moves()
+
+        self.board_widget.update()
 
     def init_ui(self):
         main_layout = QVBoxLayout()
@@ -25,6 +49,7 @@ class GameWindow(QWidget):
 
         # Board
         main_layout.addWidget(self.board_widget)
+        
 
         # Controls
         controls_layout = QHBoxLayout()
@@ -85,7 +110,7 @@ class GameWindow(QWidget):
             wc = int(self.col_edit.text())
             orient = 'H' if self.h_radio.isChecked() else 'V'
             if self.game_state.try_place_wall(self.game_state.current, orient, wr, wc):
-                self.board_widget.update()
+                self.sync_board()
                 self.update_status()
             else:
                 self.status_label.setText("Invalid wall placement!")
@@ -94,7 +119,7 @@ class GameWindow(QWidget):
 
     def undo_move(self):
         if self.game_state.undo():
-            self.board_widget.update()
+            self.sync_board()
             self.update_status()
         else:
             self.status_label.setText("No moves to undo!")
@@ -102,7 +127,7 @@ class GameWindow(QWidget):
     def reset_game(self):
         self.game_state = GameState()
         self.board_widget.game = self.game_state
-        self.board_widget.update()
+        self.sync_board()
         self.update_status()
 
     def update_status(self):

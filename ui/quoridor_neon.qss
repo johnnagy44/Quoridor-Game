@@ -1,0 +1,198 @@
+/* ========================== */
+/* GLOBAL                     */
+/* ========================== */
+QWidget {
+    
+    color: #000000;
+    font-family: "Poppins";
+    }
+
+
+
+/* ========================== */
+/* TITLE                      */
+/* ========================== */
+QLabel#titleLabel {
+    font-family: "Poppins ExtraBoldItalic";
+    font-size: 48px;
+    font-weight: 1200;
+    color: #e6e6e6ff;
+}
+
+/* --- Subtitle --- */
+QLabel#subtitleLabel {
+    font-family: "Poppins Medium";
+    font-size: 18px;
+    font-weight: 500;
+    color: #a6a6a8;
+}
+
+QWidget #MainWindow{
+    background: transparent;
+}
+
+
+/* =======================
+   TITLE
+======================= */
+#howTitle {
+    font-family: "Poppins ExtraBold";
+    font-size: 40px;
+    color: #7dd3fc;
+}
+
+/* =======================
+   SCROLL AREA
+======================= */
+/* ScrollArea frame */
+#scrollArea {
+    background: transparent;
+    border: none;
+}
+
+/* The actual widget that holds everything inside the scroll area */
+QScrollArea QWidget {
+    background: transparent;
+}
+
+/* The viewport (the most important part) */
+QScrollArea > QWidget {
+    background: transparent;
+}
+
+QScrollArea > QViewport {
+    background: transparent;
+}
+
+
+/* =======================
+   PANELS
+======================= */
+QFrame#neonPanel {
+    background-color: #0d0f1a;
+    border-radius: 16px;
+    border: 2px solid transparent;
+
+    /* Neon outline effect */
+    border-image: linear-gradient(
+        to right,
+        #00eaff,
+        #ff00ff
+    ) 1;
+}
+
+/* Panel title */
+#panelTitle {
+    font-family: "Poppins ExtraBold";
+    font-size: 22px;
+    color: #7dd3fc;
+}
+
+/* Regular text */
+#panelText {
+    font-family: "Poppins Medium";
+    font-size: 16px;
+    color: #d5d5d7;
+}
+
+
+/* ========================== */
+/* SIDE PANEL (if used)       */
+/* ========================== */
+QFrame#sidePanel {
+    background-color: #101014;
+    border: 2px solid #00eaff;
+    border-radius: 15px;
+}
+
+/* ========================== */
+/* BASE BUTTON STYLE          */
+/* ========================== */
+QPushButton {
+    background-color: transparent;
+    border: 2px solid #00eaff;
+    border-radius: 14px;
+    padding: 12px;
+    color: #00eaff;
+    font-size: 18px;
+    font-weight: bold;
+    transition: 200ms;
+}
+
+QPushButton:hover {
+    background-color: #00eaff;
+    color: #0d0d0f;
+}
+
+QPushButton:pressed {
+    background-color: #007a99;
+    border-color: #007a99;
+}
+
+/* ========================== */
+/* BLUE BUTTON (New Game)     */
+/* ========================== */
+QPushButton.blue {
+    border-color: #00aaff;
+    color: #00aaff;
+}
+QPushButton.blue:hover {
+    background-color: #00aaff;
+    color: #0d0d0f;
+}
+QPushButton.blue:pressed {
+    background-color: #0088cc;
+}
+
+/* ========================== */
+/* PINK BUTTON (How to Play)  */
+/* ========================== */
+QPushButton.pink {
+    border-color: #ff0077;
+    color: #ff0077;
+}
+QPushButton.pink:hover {
+    background-color: #ff0077;
+    color: #0d0d0f;
+}
+QPushButton.pink:pressed {
+    background-color: #cc005e;
+}
+
+/* ========================== */
+/* PURPLE BUTTON (Settings)   */
+/* ========================== */
+QPushButton.purple {
+    border-color: #9d00ff;
+    color: #9d00ff;
+}
+QPushButton.purple:hover {
+    background-color: #9d00ff;
+    color: #0d0d0f;
+}
+QPushButton.purple:pressed {
+    background-color: #7a00cc;
+}
+
+/* ========================== */
+/* RED BUTTON (Exit)          */
+/* ========================== */
+QPushButton.red {
+    border-color: #ff0033;
+    color: #ff0033;
+}
+QPushButton.red:hover {
+    background-color: #ff0033;
+    color: #0d0d0f;
+}
+QPushButton.red:pressed {
+    background-color: #cc0028;
+}
+
+/* ========================== */
+/* FOOTER VERSION LABEL       */
+/* ========================== */
+QLabel#versionLabel {
+    font-size: 14px;
+    color: #00eaff;
+}
