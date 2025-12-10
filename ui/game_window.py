@@ -7,8 +7,9 @@ from .neon_board import NeonQuoridorBoard
 from game.game_state import GameState
 
 class GameWindow(QWidget):
-    def __init__(self):
+    def __init__(self,stacked_widget):
         super().__init__()
+        self.stacked_widget=stacked_widget
         self.load_stylesheet()
         self.setWindowTitle("Quoridor Game")
         self.game_state = GameState()

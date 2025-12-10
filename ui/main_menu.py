@@ -68,10 +68,18 @@ class MainMenu(QWidget):
         btn_how = self.make_button("How to Play", "book.png", "btnHowToPlay")
         btn_set = self.make_button("Settings", "settings.png", "btnSettings")
         btn_exit = self.make_button("Exit", "exit.png", "btnExit")
-
+        
+        #buttons qss
+        btn_exit.setObjectName("red")
+        btn_set.setObjectName("purple")
+        btn_how.setObjectName("pink")
+        btn_new.setObjectName("blue")
+        
         #buttons functionallity
+        btn_new.clicked.connect(self.open_game)
         btn_how.clicked.connect(self.open_how_to_play)
         btn_set.clicked.connect(self.open_settings)
+        
         
         
         layout.addSpacing(30)
@@ -111,3 +119,6 @@ class MainMenu(QWidget):
 
     def open_settings(self):
         self.stacked_widget.setCurrentIndex(2)
+        
+    def open_game(self):
+        self.stacked_widget.setCurrentIndex(3)

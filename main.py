@@ -1,10 +1,11 @@
 import sys
 from PyQt6.QtWidgets import QApplication,QStackedWidget
+import ctypes
+from PyQt6.QtGui import QIcon,QFontDatabase
 from ui.main_menu import MainMenu
 from ui.main_window import MainWindow
 from ui.settings_window import SettingsWindow
 
-from PyQt6.QtGui import QFontDatabase
 
 def load_fonts():
     QFontDatabase.addApplicationFont("ui/assets/fonts/Poppins-ExtraBold.ttf")
@@ -17,7 +18,10 @@ def load_styles(app):
         app.setStyleSheet(f.read())
 
 if __name__ == "__main__":
+    
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("quoridor.game")
     app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon("ui/assets/icon.ico"))
     load_fonts()
     load_styles(app)
 

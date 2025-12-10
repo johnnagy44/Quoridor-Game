@@ -55,7 +55,7 @@ QScrollArea QWidget {
     background: transparent;
 }
 
-/* The viewport (the most important part) */
+/* The viewport */
 QScrollArea > QWidget {
     background: transparent;
 }
@@ -132,8 +132,8 @@ QSpinBox {
 
 /* Focus glow */
 QSpinBox:focus {
-    border: 2px solid #0095ff;                 /* switch to neon pink when active */
-}
+    border: 2px solid #0095ff;               
+    }
 
 /* Up/Down buttons */
 QSpinBox::up-button,
@@ -182,8 +182,10 @@ QComboBox#gridSizeCombo {
 QComboBox#gridSizeCombo QAbstractItemView {
     background-color: #0d0f1a;
     border: 1px solid #00eaff;
+    color: #7dd3fc;
     selection-background-color: #00eaff;
-    selection-color: #0d0f1a;
+    selection-color: #1a0d17ff;
+    
 }
 
 /* Hover effect */
@@ -221,6 +223,12 @@ QCheckBox::indicator:hover {
     border-color: #7cb6ff;
 }
 
+#savedMessage {
+    color: #7dffb3;         /* neon green */
+    font-family: "Poppins Medium";
+    font-size: 16px;
+    padding-right: 15px;
+}
 
 
 /* ========================== */
@@ -256,63 +264,64 @@ QPushButton:pressed {
     border-color: #007a99;
 }
 
+
 /* ========================== */
 /* BLUE BUTTON (New Game)     */
 /* ========================== */
-QPushButton.blue {
+QPushButton#blue {
     border-color: #00aaff;
     color: #00aaff;
 }
-QPushButton.blue:hover {
+QPushButton#blue:hover {
     background-color: #00aaff;
     color: #0d0d0f;
 }
-QPushButton.blue:pressed {
+QPushButton#blue:pressed {
     background-color: #0088cc;
 }
 
 /* ========================== */
 /* PINK BUTTON (How to Play)  */
 /* ========================== */
-QPushButton.pink {
+QPushButton#pink {
     border-color: #ff0077;
     color: #ff0077;
 }
-QPushButton.pink:hover {
+QPushButton#pink:hover {
     background-color: #ff0077;
     color: #0d0d0f;
 }
-QPushButton.pink:pressed {
+QPushButton#pink:pressed {
     background-color: #cc005e;
 }
 
 /* ========================== */
 /* PURPLE BUTTON (Settings)   */
 /* ========================== */
-QPushButton.purple {
+QPushButton#purple {
     border-color: #9d00ff;
     color: #9d00ff;
 }
-QPushButton.purple:hover {
+QPushButton#purple:hover {
     background-color: #9d00ff;
     color: #0d0d0f;
 }
-QPushButton.purple:pressed {
+QPushButton#purple:pressed {
     background-color: #7a00cc;
 }
 
 /* ========================== */
 /* RED BUTTON (Exit)          */
 /* ========================== */
-QPushButton.red {
-    border-color: #ff0033;
-    color: #ff0033;
+QPushButton#red {
+    border-color: #f61b1b;
+    color: #f61b1b;
 }
-QPushButton.red:hover {
+QPushButton#red:hover {
     background-color: #ff0033;
     color: #0d0d0f;
 }
-QPushButton.red:pressed {
+QPushButton#red:pressed {
     background-color: #cc0028;
 }
 
@@ -322,4 +331,117 @@ QPushButton.red:pressed {
 QLabel#versionLabel {
     font-size: 14px;
     color: #00eaff;
+}
+
+
+
+/* ========================== */
+/* SET UP PAGE                */
+/* ========================== */
+
+/* ------- Labels ------- */
+QLabel#setupTitle {
+    font-family: "Poppins ExtraBold";
+    font-size: 42px;
+    color: #7dd3fc;
+}
+
+QLabel#setupFieldLabel {
+    font-family: "Poppins Medium";
+    font-size: 18px;
+    color: #cdeaff;
+}
+
+/* ------- Input fields (Player1, Player2, Time Limit) ------- */
+QLineEdit#setupField {
+    background-color: #0d0f1a;
+    color: #7dd3fc;
+    border: 2px solid #00eaff;
+    border-radius: 12px;
+    padding: 10px;
+    font-family: "Poppins Medium";
+    font-size: 18px;
+}
+
+QLineEdit#setupField:focus {
+    border-color: #0095ff;
+    color: white;
+}
+
+/* ------- Rules panel ------- */
+QFrame#rulesPanel {
+    background-color: #08101a;
+    border-radius: 16px;
+    border: 2px solid transparent;
+
+    border-image: linear-gradient(
+        to right,
+        #00eaff,
+        #ff00ff
+    ) 1;
+}
+
+QLabel#rulesTitle {
+    font-family: "Poppins ExtraBold";
+    font-size: 22px;
+    color: #7dd3fc;
+}
+
+QLabel#rulesText {
+    font-family: "Poppins Medium";
+    font-size: 16px;
+    color: #d5d5d7;
+}
+
+/* ------- Start Game button (green) ------- */
+QPushButton#startGameBtn {
+    background-color: #17c964;
+    border: 2px solid #17c964;
+    color: #0f0f0f;
+    font-family: "Poppins ExtraBold";
+    font-size: 20px;
+    padding: 12px 36px;
+    border-radius: 16px;
+}
+
+QPushButton#startGameBtn:hover {
+    background-color: #1eea7a;
+    border-color: #1eea7a;
+}
+
+QPushButton#startGameBtn:pressed {
+    background-color: #0da654;
+    border-color: #0da654;
+}
+
+/* ========================== */
+/* AI OPTION + DIFFICULTY     */
+/* ========================== */
+
+QCheckBox#aiToggle {
+    font-family: "Poppins Medium";
+    font-size: 18px;
+    color: #e6e6e6;
+}
+
+QComboBox#aiDifficulty {
+    background-color: #0d0f1a;
+    color: #7dd3fc;
+    border: 2px solid #00eaff;
+    border-radius: 10px;
+    padding: 6px;
+    font-family: "Poppins Medium";
+    font-size: 16px;
+}
+
+QComboBox#aiDifficulty:hover {
+    border-color: #0095ff;
+}
+
+QComboBox#aiDifficulty QAbstractItemView {
+    background-color: #0d0f1a;
+    border: 1px solid #00eaff;
+    color: #7dd3fc;
+    selection-background-color: #00eaff;
+    selection-color: #101014;
 }

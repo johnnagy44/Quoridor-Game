@@ -2,7 +2,6 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QPushButton,QComboBox,
     QCheckBox, QSpinBox, QFrame, QScrollArea
 )
-from PyQt6.QtGui import QFont
 from PyQt6.QtCore import Qt,QTimer
 from PyQt6.QtGui import QPixmap, QPalette, QBrush
 import os
@@ -80,9 +79,17 @@ class SettingsWindow(QWidget):
 
         # ---- Save button ----
         save_btn = QPushButton("Save Settings")
-        save_btn.setObjectName("blue")  # uses your blue button theme
+        save_btn.setObjectName("startGameBtn")  
         save_btn.clicked.connect(self.save_settings)
         layout.addWidget(save_btn, alignment=Qt.AlignmentFlag.AlignRight)
+        
+        # ---- Saved message ----
+        self.saved_msg = QLabel("Settings saved!")
+        self.saved_msg.setObjectName("savedMessage")
+        self.saved_msg.setAlignment(Qt.AlignmentFlag.AlignRight)
+        self.saved_msg.hide()
+        layout.addWidget(self.saved_msg)
+
 
         layout.addStretch()
 
@@ -117,7 +124,7 @@ class SettingsWindow(QWidget):
         self.sound_toggle.setChecked(True)
         self.sound_toggle.clicked.connect(self.update_toggle_text)
         self.sound_toggle.setFixedWidth(120)
-        self.sound_toggle.setObjectName("purple")
+        #self.sound_toggle.setObjectName("purple")
 
         row.addWidget(lbl)
         row.addStretch()
@@ -182,14 +189,10 @@ class SettingsWindow(QWidget):
 
     
     def grid_size_selected(self, index: int):
-        # get text from index (safer than currentText in weird focus states)
         text = self.grid_size.itemText(index)
-
         sizes = {"9×9": 9, "11×11": 11, "13×13": 13}
         self.selected_grid = sizes.get(text, None)
 
-        # hide the popup after the event loop returns (ensures it actually closes)
-        QTimer.singleShot(0, self.grid_size.hidePopup)
 
         
 
@@ -216,11 +219,18 @@ class SettingsWindow(QWidget):
             "player1": self.p1.text(),
             "player2": self.p2.text(),
             "time_limit": self.time_limit.value(),
-            "board_size": self.board_size.value(),
+            "board_size": self.selected_grid,
             "show_hints": self.cb_hints.isChecked(),
             "show_valid": self.cb_valid.isChecked(),
             "animate": self.cb_anim.isChecked(),
         }
+        
+         # show saved message
+        self.saved_msg.setText("Settings saved!")
+        self.saved_msg.show()
+        
+        QTimer.singleShot(3000, self.saved_msg.hide)
+        
 
 
     # ================================================================
