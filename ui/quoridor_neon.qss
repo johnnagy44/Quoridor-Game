@@ -95,6 +95,133 @@ QFrame#neonPanel {
     color: #d5d5d7;
 }
 
+/* ========================== */
+/* Settings                   */
+/* ========================== */
+QLabel #panelText {
+    color: #d5d5d7;                /* soft light-gray for readability */
+    font-family: "Poppins Medium";
+    font-size: 16px;
+}
+QLineEdit#neonField {
+    background-color: #0d0f1a;
+    color: #7dd3fc;
+    border: 2px solid #00eaff;
+    border-radius: 10px;
+    padding: 6px;
+    font-family: "Poppins Medium";
+    font-size: 16px;
+}
+
+QLineEdit#neonField:focus {
+    border: 2px solid #0095ff;
+    color: #ffffff;
+}
+
+
+/* NEON SPINBOX (Contrasting with dark theme) */
+QSpinBox {
+    background-color: #0d0f1a;                 /* dark background like your UI */
+    color: #7dd3fc;                            /* cyan text for contrast */
+    border: 2px solid #00eaff;                 /* neon cyan border */
+    border-radius: 8px;
+    padding: 4px 6px;
+    font-family: "Poppins Medium";
+    font-size: 16px;
+}
+
+/* Focus glow */
+QSpinBox:focus {
+    border: 2px solid #0095ff;                 /* switch to neon pink when active */
+}
+
+/* Up/Down buttons */
+QSpinBox::up-button,
+QSpinBox::down-button {
+    background-color: #101626;                 /* subtle dark inner buttons */
+    border: none;
+    width: 20px;
+    border-left: 1px solid #00eaff;
+}
+
+/* Hover glow */
+QSpinBox::up-button:hover,
+QSpinBox::down-button:hover {
+    background-color: #00eaff;                 /* neon cyan hover */
+}
+
+QSpinBox::up-button:pressed,
+QSpinBox::down-button:pressed {
+    background-color: #007a99;                 /* darker cyan pressed */
+}
+
+/* Arrow icons (white for contrast) */
+QSpinBox::up-arrow{
+    width: 10px;
+    height: 10px;
+    image: url(./ui/assets/arrow-light-up.png);       /* replace with your white arrow icon */
+}
+QSpinBox::down-arrow {
+    width: 10px;
+    height: 10px;
+    image: url(./ui/assets/arrow-light-down.png);       /* replace with your white arrow icon */
+}
+
+
+QComboBox#gridSizeCombo {
+    background-color: #0d0f1a;
+    color: #7dd3fc;
+    border: 2px solid #00eaff;
+    border-radius: 10px;
+    padding: 6px;
+    font-family: "Poppins Medium";
+    font-size: 16px;
+}
+
+/* When the dropdown is open */
+QComboBox#gridSizeCombo QAbstractItemView {
+    background-color: #0d0f1a;
+    border: 1px solid #00eaff;
+    selection-background-color: #00eaff;
+    selection-color: #0d0f1a;
+}
+
+/* Hover effect */
+QComboBox#gridSizeCombo:hover {
+    border-color: #ff00ff;
+}
+
+/* Arrow button */
+QComboBox#gridSizeCombo::down-arrow {
+    image: url(./ui/assets/arrow-light-down.png); 
+}
+
+
+/* ===== Checkboxes ===== */
+QCheckBox {
+    spacing: 8px;
+    color: #eaeaea;
+}
+
+/* Custom colored checkbox indicator */
+QCheckBox::indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 2px solid #888;
+    background-color: #2a2a2a;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #3a86ff;
+    border-color: #3a86ff;
+}
+
+QCheckBox::indicator:hover {
+    border-color: #7cb6ff;
+}
+
+
 
 /* ========================== */
 /* SIDE PANEL (if used)       */

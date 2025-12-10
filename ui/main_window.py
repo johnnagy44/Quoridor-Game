@@ -4,6 +4,7 @@ from .game_window import GameWindow
 from .settings_window import SettingsWindow
 from .main_menu import MainMenu
 from .how_to_play_window import HowToPlayWindow
+from .settings_window import SettingsWindow
 
 
 class MainWindow(QWidget):
@@ -20,9 +21,11 @@ class MainWindow(QWidget):
 
         self.main_menu = MainMenu(self.stack)
         self.how_to_play = HowToPlayWindow(self.stack)
+        self.settings=SettingsWindow(self.stack)
 
         self.stack.addWidget(self.main_menu)      # index 0
         self.stack.addWidget(self.how_to_play)    # index 1
+        self.stack.addWidget(self.settings)       # index 2
 
         main_layout = QVBoxLayout(self)
         main_layout.addWidget(self.stack)

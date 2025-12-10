@@ -2,6 +2,7 @@ import sys
 from PyQt6.QtWidgets import QApplication,QStackedWidget
 from ui.main_menu import MainMenu
 from ui.main_window import MainWindow
+from ui.settings_window import SettingsWindow
 
 from PyQt6.QtGui import QFontDatabase
 
@@ -22,6 +23,7 @@ if __name__ == "__main__":
 
     #menu = MainMenu()
     menu=MainWindow()
+    #menu=SettingsWindow()
     menu.show()
 
     sys.exit(app.exec())

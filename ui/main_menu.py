@@ -14,9 +14,7 @@ class MainMenu(QWidget):
         self.stacked_widget = stacked_widget
         self.setObjectName("MainMenu")
         self.setWindowTitle("Quoridor Game - Main Menu")
-        #self.setFixedSize(900, 700)
         img = os.path.join(os.path.dirname(__file__), "assets", "background.jpg")
-        #print(os.path.exists(img), img)
 
 
         pix = QPixmap(img).scaled(
@@ -73,6 +71,7 @@ class MainMenu(QWidget):
 
         #buttons functionallity
         btn_how.clicked.connect(self.open_how_to_play)
+        btn_set.clicked.connect(self.open_settings)
         
         
         layout.addSpacing(30)
@@ -100,8 +99,6 @@ class MainMenu(QWidget):
         btn.setFont(QFont("Poppins Semibold", 18))
 
 
-
-
         icon_path = os.path.join(os.path.dirname(__file__), "assets", icon_filename)
         if os.path.exists(icon_path):
             btn.setIcon(QIcon(icon_path))
@@ -111,3 +108,6 @@ class MainMenu(QWidget):
     
     def open_how_to_play(self):
         self.stacked_widget.setCurrentIndex(1)   # Switch to HowToPlay page
+
+    def open_settings(self):
+        self.stacked_widget.setCurrentIndex(2)
