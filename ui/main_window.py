@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout,QStackedWidget
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon,QPixmap
 from .game_window import GameWindow
 from .settings_window import SettingsWindow
 from .main_menu import MainMenu
@@ -11,7 +12,8 @@ class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setObjectName("MainWindow")
-        self.setWindowTitle("Quoridor Game - Main Menu")
+        self.setWindowTitle("Quoridor Game")
+        self.setWindowIcon(QIcon("ui/assets/icon.ico"))
         self.setFixedSize(900, 700)
         self.setContentsMargins(0, 0, 0, 0)
         #self.setStyleSheet("QWidget { border: 0px; }") 

@@ -3,7 +3,17 @@ from PyQt6.QtWidgets import (
     QCheckBox, QSpinBox, QFrame, QScrollArea
 )
 from PyQt6.QtGui import QFont
-from PyQt6.QtCore import Qt,QTimer
+from PyQt6.QtCore import Qt
+Expand
+settings_window.py
+
+
+from PyQt6.QtWidgets import (
+    QWidget, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QPushButton,QComboBox,
+    QCheckBox, QSpinBox, QFrame, QScrollArea
+)
+from PyQt6.QtGui import QFont
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap, QPalette, QBrush
 import os
 
@@ -12,7 +22,6 @@ class SettingsWindow(QWidget):
     def __init__(self, stacked_widget):
         super().__init__()
         self.stacked_widget = stacked_widget
-        self.selected_grid = 9
 
         self.setWindowTitle("Settings")
         
@@ -173,7 +182,7 @@ class SettingsWindow(QWidget):
 
         # Set default selected value (optional)
         self.grid_size.setCurrentIndex(0)   # selects 9×9
-        
+        self.selected_grid = 9
 
         panel.layout().addWidget(self.grid_size)
         self.grid_size.activated.connect(self.grid_size_selected)
@@ -181,17 +190,16 @@ class SettingsWindow(QWidget):
         return panel
 
     
-    def grid_size_selected(self, index: int):
-        # get text from index (safer than currentText in weird focus states)
-        text = self.grid_size.itemText(index)
+    def grid_size_selected(self):
+        text = self.grid_size.currentText()
 
-        sizes = {"9×9": 9, "11×11": 11, "13×13": 13}
-        self.selected_grid = sizes.get(text, None)
-
-        # hide the popup after the event loop returns (ensures it actually closes)
-        QTimer.singleShot(0, self.grid_size.hidePopup)
-
-        
+        # Convert label to numeric value
+        if text == "9×9":
+            self.selected_grid = 9
+        elif text == "11×11":
+            self.selected_grid = 11
+        elif text == "13×13":
+            self.selected_grid = 13
 
     def display_panel(self):
         panel = self.neon_panel("Display Settings")
@@ -216,7 +224,7 @@ class SettingsWindow(QWidget):
             "player1": self.p1.text(),
             "player2": self.p2.text(),
             "time_limit": self.time_limit.value(),
-            "board_size": self.board_size.value(),
+            "board_size": self.selected_grid,
             "show_hints": self.cb_hints.isChecked(),
             "show_valid": self.cb_valid.isChecked(),
             "animate": self.cb_anim.isChecked(),
@@ -228,3 +236,4 @@ class SettingsWindow(QWidget):
     # ================================================================
     def handle_back(self):
         self.stacked_widget.setCurrentIndex(0)
+

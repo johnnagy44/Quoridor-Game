@@ -15,7 +15,7 @@ QWidget {
 QLabel#titleLabel {
     font-family: "Poppins ExtraBoldItalic";
     font-size: 48px;
-    font-weight: 1200;
+    font-weight: 1000;
     color: #e6e6e6ff;
 }
 
@@ -188,7 +188,7 @@ QComboBox#gridSizeCombo QAbstractItemView {
 
 /* Hover effect */
 QComboBox#gridSizeCombo:hover {
-    border-color: #ff00ff;
+    border-color: #0095ff;
 }
 
 /* Arrow button */

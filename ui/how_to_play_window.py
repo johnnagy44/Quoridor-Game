@@ -11,7 +11,8 @@ class HowToPlayWindow(QWidget):
     def __init__(self, stacked_widget):   
         super().__init__()
         self.stacked_widget = stacked_widget
-
+        
+        self.setWindowTitle("Quoridor Game - How To Play")
         self.setObjectName("HowToPlayPage")
         img = os.path.join(os.path.dirname(__file__), "assets", "background.jpg")
         #print(os.path.exists(img), img)
