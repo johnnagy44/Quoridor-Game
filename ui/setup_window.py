@@ -182,7 +182,7 @@ class SetupWindow(QWidget):
     
     def handle_start(self):
         ####TO BE MODIFIED####
-        self.stacked_widget.setCurrentIndex(0)
+        self.stacked_widget.setCurrentIndex(4)
 
     def toggle_ai_mode(self):
         if self.ai_toggle.isChecked():

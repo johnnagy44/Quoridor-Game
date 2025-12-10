@@ -26,11 +26,13 @@ class MainWindow(QWidget):
         self.how_to_play = HowToPlayWindow(self.stack)
         self.settings=SettingsWindow(self.stack)
         self.game_setup=SetupWindow(self.stack)
+        self.game=GameWindow(self.stack)
 
         self.stack.addWidget(self.main_menu)      # index 0
         self.stack.addWidget(self.how_to_play)    # index 1
         self.stack.addWidget(self.settings)       # index 2
-        self.stack.addWidget(self.game_setup)          # index 3
+        self.stack.addWidget(self.game_setup)     # index 3
+        self.stack.addWidget(self.game)           # index 4
 
         main_layout = QVBoxLayout(self)
         main_layout.addWidget(self.stack)

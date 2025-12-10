@@ -445,3 +445,95 @@ QComboBox#aiDifficulty QAbstractItemView {
     selection-background-color: #00eaff;
     selection-color: #101014;
 }
+
+
+#BoardWidget_Neon { background: transparent; }
+#PlayerToken_P1 { /* if you create QLabel tokens */ }
+#PlayerToken_P2 { }
+#WallPreview_Neon { /* not required for painter-based preview */ }
+#WallFlash_Invalid { }
+#TurnLabel_Neon { border-radius: 10px; padding: 10px; }
+
+QFrame#PlayerCard {
+    background-color: #021a26;
+    border: 2px solid #19d3ff;
+    border-radius: 15px;
+    padding: 15px;
+}
+/* --- Board Cells --- */
+QLabel#BoardCell {
+    background-color: #1a2333;
+    border: 2px solid #8228ff;
+    border-radius: 6px;
+    min-width: 40px;
+    min-height: 40px;
+}
+
+/* Glow when active (you can toggle this dynamically) */
+QLabel#BoardCell:hover {
+    border: 2px solid #ff4fff;
+    box-shadow: 0 0 12px #ff4fff;
+}
+
+/* Bottom turn display bar */
+QLabel#TurnLabel {
+    border: 2px solid #19d3ff;
+    font-family: "Poppins Medium";
+    color: #e6e6e6;
+    font-size: 18px;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+
+QFrame[role="p1"] {
+    background-color: rgba(0, 255, 255, 25);
+    border: 2px solid rgb(0, 255, 255);
+    border-radius: 12px;
+    padding: 8px;
+}
+
+QFrame[role="p1"] QLabel#PlayerCardLabel {
+    color: rgb(0, 255, 255);
+    font-weight: bold;
+    font-size: 16px;
+}
+
+QFrame[role="p2"] {
+    background-color: rgba(255, 0, 255, 25);
+    border: 2px solid rgb(255, 0, 255);
+    border-radius: 12px;
+    padding: 8px;
+}
+
+QFrame[role="p2"] QLabel#PlayerCardLabel {
+    color: rgb(255, 0, 255);
+    font-weight: bold;
+    font-size: 16px;
+}
+
+
+/* ========================== */
+/* BOTTOM BAR                 */
+/* ========================== */
+QFrame#TurnBar[role="p1"] {
+    background-color: rgba(0, 255, 255, 25);
+    border-top: 2px solid rgb(0, 255, 255);
+}
+
+QFrame#TurnBar[role="p1"] QLabel#TurnLabel {
+    color: rgb(0, 255, 255);
+    font-weight: bold;
+    font-size: 18px;
+}
+
+QFrame#TurnBar[role="p2"] {
+    background-color: rgba(255, 0, 255, 25);
+    border-top: 2px solid rgb(255, 0, 255);
+}
+
+QFrame#TurnBar[role="p2"] QLabel#TurnLabel {
+    color: rgb(255, 0, 255);
+    font-weight: bold;
+    font-size: 18px;
+}
