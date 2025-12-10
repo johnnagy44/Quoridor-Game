@@ -476,14 +476,7 @@ QLabel#BoardCell:hover {
 }
 
 /* Bottom turn display bar */
-QLabel#TurnLabel {
-    border: 2px solid #19d3ff;
-    font-family: "Poppins Medium";
-    color: #e6e6e6;
-    font-size: 18px;
-    border-radius: 10px;
-    padding: 10px;
-}
+
 
 
 QFrame[role="p1"] {
@@ -517,23 +510,28 @@ QFrame[role="p2"] QLabel#PlayerCardLabel {
 /* BOTTOM BAR                 */
 /* ========================== */
 QFrame#TurnBar[role="p1"] {
-    background-color: rgba(0, 255, 255, 25);
-    border-top: 2px solid rgb(0, 255, 255);
+    border-radius: 10px;
+    padding: 4px 10px;
+    background-color: rgba(0, 255, 255, 25); 
+    border-top: 2px solid #00FFFF;
 }
 
 QFrame#TurnBar[role="p1"] QLabel#TurnLabel {
-    color: rgb(0, 255, 255);
+    color: #00FFFF; 
     font-weight: bold;
     font-size: 18px;
 }
 
 QFrame#TurnBar[role="p2"] {
+    border-radius: 10px;
+    padding: 4px 10px;
     background-color: rgba(255, 0, 255, 25);
-    border-top: 2px solid rgb(255, 0, 255);
+    border-top: 2px solid #FF00FF;
 }
 
 QFrame#TurnBar[role="p2"] QLabel#TurnLabel {
-    color: rgb(255, 0, 255);
+    color: #FF00FF;  
     font-weight: bold;
     font-size: 18px;
 }
+

@@ -1,140 +1,178 @@
 from PyQt6.QtWidgets import (
-    QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushButton,
-    QRadioButton, QLineEdit, QGroupBox, QFormLayout, QButtonGroup
+    QWidget, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QPushButton,QComboBox,
+    QCheckBox, QSpinBox, QFrame, QScrollArea
 )
-from PyQt6.QtCore import Qt
-from .neon_board import NeonQuoridorBoard
+from PyQt6.QtCore import Qt,pyqtSignal
+from PyQt6.QtGui import QPixmap, QPalette, QBrush
+import os
+
+from .board_widget import BoardWidget
 from game.game_state import GameState
 
 class GameWindow(QWidget):
     def __init__(self,stacked_widget):
         super().__init__()
-        self.stacked_widget=stacked_widget
-        self.load_stylesheet()
-        self.setWindowTitle("Quoridor Game")
-        self.game_state = GameState()
-        self.board_widget = NeonQuoridorBoard()
+        self.stacked_widget = stacked_widget
+        self.setWindowTitle("Quoridor - Game Board")
+        self.resize(2500, 1950)
+        
+        
+        img = os.path.join(os.path.dirname(__file__), "assets", "background.jpg")
+        pix = QPixmap(img).scaled(
+        self.size(),
+        Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+        Qt.TransformationMode.SmoothTransformation
+        )
+        palette = QPalette()
+        palette.setBrush(QPalette.ColorRole.Window, QBrush(pix))
+        self.setPalette(palette)
+        self.setAutoFillBackground(True)
+        
+        main_layout = QVBoxLayout(self)
+        top_bar = self.build_top_bar()
+        self.center_panel = self.build_center_panel()
+        self.bottom_bar = self.build_bottom_bar()
 
-        self.init_ui()
+        main_layout.addLayout(top_bar)
+        main_layout.addLayout(self.center_panel)
+        main_layout.addWidget(self.bottom_bar)
 
-    def load_stylesheet(self):
-        try:
-            with open("ui/quoridor_neon.qss", "r") as f:
-                self.setStyleSheet(f.read())
-        except Exception as e:
-            print("Failed to load stylesheet:", e)
+    # -------------------------
+    # Top Bar
+    # -------------------------
+    def build_top_bar(self):
+        layout = QHBoxLayout()
 
-    def sync_board(self):
-        # Update player positions
-        p1 = self.game_state.players[0].pos
-        p2 = self.game_state.players[1].pos
-        self.board_widget.p1_pos = p1
-        self.board_widget.p2_pos = p2
+        menu_btn = QPushButton("Menu")
+        reset_btn = QPushButton("Reset")
+        
+        menu_btn.clicked.connect(self.menu_handle)
+        reset_btn.clicked.connect(self.reset_handle)
+        
+        layout.addWidget(menu_btn, alignment=Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(reset_btn, alignment=Qt.AlignmentFlag.AlignRight)
 
-        # Update walls
-        self.board_widget.p1_walls = self.game_state.players[0].walls_pos
-        self.board_widget.p2_walls = self.game_state.players[1].walls_pos
+        return layout
 
-        # Highlight legal moves (optional)
-        self.board_widget.highlight_moves = self.game_state.legal_moves()
+    # -------------------------
+    # Center Panels
+    # -------------------------
+    def build_center_panel(self):
+        layout = QHBoxLayout()
 
-        self.board_widget.update()
+        # Player cards
+        p1_card = self.build_player_card("Player 1", "Reach bottom row", "p1")
+        p2_card = self.build_player_card("Player 2", "Reach top row", "p2")
 
-    def init_ui(self):
-        main_layout = QVBoxLayout()
+        
+        game_state=GameState(size=9)
 
-        # Status bar
-        self.status_label = QLabel("Player 1's turn")
-        self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.addWidget(self.status_label)
-
-        # Board
-        main_layout.addWidget(self.board_widget)
+        # Game board
+        self.board = BoardWidget(game_state)
+        self.board.moveMade.connect(self.update_turn_bar)
         
 
-        # Controls
-        controls_layout = QHBoxLayout()
+        layout.addWidget(p1_card)
+        layout.addWidget(self.board, stretch=1)
+        layout.addWidget(p2_card)
 
-        # Wall placement controls
-        wall_group = QGroupBox("Place Wall")
-        wall_layout = QVBoxLayout()
+        return layout
 
-        # Orientation
-        orient_layout = QHBoxLayout()
-        orient_layout.addWidget(QLabel("Orientation:"))
-        self.h_radio = QRadioButton("Horizontal")
-        self.v_radio = QRadioButton("Vertical")
-        self.h_radio.setChecked(True)
-        orient_layout.addWidget(self.h_radio)
-        orient_layout.addWidget(self.v_radio)
-        wall_layout.addLayout(orient_layout)
+    # -------------------------
+    # Player Info Card
+    # -------------------------
+    def build_player_card(self, name, goal, style_name):
+        card = QFrame()
+        card.setObjectName(f"{style_name}Card")     # e.g. "Player1Card"
+        card.setProperty("role", style_name)        # e.g. "p1" or "p2"
 
-        # Position
-        pos_layout = QFormLayout()
-        self.row_edit = QLineEdit("0")
-        self.col_edit = QLineEdit("0")
-        pos_layout.addRow("Row:", self.row_edit)
-        pos_layout.addRow("Col:", self.col_edit)
-        wall_layout.addLayout(pos_layout)
+        layout = QVBoxLayout(card)
 
-        # Place button
-        self.place_btn = QPushButton("Place Wall")
-        self.place_btn.clicked.connect(self.place_wall)
-        wall_layout.addWidget(self.place_btn)
+        title = QLabel(name)
+        walls = QLabel("Walls remaining: 10")
+        goal_label = QLabel(f"Goal: {goal}")
 
-        wall_group.setLayout(wall_layout)
-        controls_layout.addWidget(wall_group)
+        # Shared class for styling text inside the card
+        title.setObjectName("PlayerCardLabel")
+        walls.setObjectName("PlayerCardLabel")
+        goal_label.setObjectName("PlayerCardLabel")
 
-        # Game controls
-        game_group = QGroupBox("Game Controls")
-        game_layout = QVBoxLayout()
+        layout.addWidget(title)
+        layout.addWidget(walls)
+        layout.addWidget(goal_label)
+        layout.addStretch()
 
-        self.undo_btn = QPushButton("Undo")
-        self.undo_btn.clicked.connect(self.undo_move)
-        game_layout.addWidget(self.undo_btn)
+        return card
 
-        self.reset_btn = QPushButton("New Game")
-        self.reset_btn.clicked.connect(self.reset_game)
-        game_layout.addWidget(self.reset_btn)
 
-        game_group.setLayout(game_layout)
-        controls_layout.addWidget(game_group)
+    # -------------------------
+    # Bottom Bar
+    # -------------------------
+    def build_bottom_bar(self):
+        bar = QFrame()
+        bar.setObjectName("TurnBar")
+        bar.setProperty("role", "p1")   # start at player 1
 
-        main_layout.addLayout(controls_layout)
+        layout = QHBoxLayout(bar)
 
-        self.setLayout(main_layout)
-        self.update_status()
+        self.turn_label = QLabel("Current Turn: Player 1")
+        self.turn_label.setObjectName("TurnLabel")
+        self.turn_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
 
-    def place_wall(self):
-        try:
-            wr = int(self.row_edit.text())
-            wc = int(self.col_edit.text())
-            orient = 'H' if self.h_radio.isChecked() else 'V'
-            if self.game_state.try_place_wall(self.game_state.current, orient, wr, wc):
-                self.sync_board()
-                self.update_status()
-            else:
-                self.status_label.setText("Invalid wall placement!")
-        except ValueError:
-            self.status_label.setText("Invalid input!")
 
-    def undo_move(self):
-        if self.game_state.undo():
-            self.sync_board()
-            self.update_status()
+        layout.addWidget(self.turn_label)
+
+        return bar
+    
+    def update_turn_bar(self):
+        current = self.board.game.current  # 0 or 1
+
+        if current == 0:
+            self.bottom_bar.setProperty("role", "p1")
+            self.turn_label.setText("Current Turn: Player 1")
         else:
-            self.status_label.setText("No moves to undo!")
+            self.bottom_bar.setProperty("role", "p2")
+            self.turn_label.setText("Current Turn: Player 2")
 
+        # Force stylesheet refresh
+        self.turn_label.style().unpolish(self.turn_label)
+        self.turn_label.style().polish(self.turn_label)
+        self.turn_label.update()
+
+        self.bottom_bar.style().unpolish(self.bottom_bar)
+        self.bottom_bar.style().polish(self.bottom_bar)
+        self.bottom_bar.update()
+
+
+
+    def resizeEvent(self, event):
+        pix = QPixmap(os.path.join(os.path.dirname(__file__), "assets", "background.jpg")).scaled(
+            self.size(),
+            Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+            Qt.TransformationMode.SmoothTransformation
+        )
+        palette = self.palette()
+        palette.setBrush(QPalette.ColorRole.Window, QBrush(pix))
+        self.setPalette(palette)
+        super().resizeEvent(event)
+        
+        
+    def menu_handle(self):
+        self.reset_game()
+        self.stacked_widget.setCurrentIndex(0)
+        
+    def reset_handle(self):
+        self.reset_game()
+        
     def reset_game(self):
-        self.game_state = GameState()
-        self.board_widget.game = self.game_state
-        self.sync_board()
-        self.update_status()
+        index = self.stacked_widget.indexOf(self)
 
-    def update_status(self):
-        if self.game_state.winner is not None:
-            self.status_label.setText(f"Player {self.game_state.winner + 1} wins!")
-            return
-        player = self.game_state.current + 1
-        walls = self.game_state.players[self.game_state.current].walls
-        self.status_label.setText(f"Player {player}'s turn - Walls: {walls}")
+        self.stacked_widget.removeWidget(self)
+        self.deleteLater()
+
+        new_window = GameWindow(self.stacked_widget)
+
+        self.stacked_widget.insertWidget(index, new_window)
+
+        self.stacked_widget.setCurrentIndex(index)
