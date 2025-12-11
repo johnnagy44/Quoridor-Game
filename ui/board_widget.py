@@ -411,12 +411,23 @@ class BoardWidget(QWidget):
         msg.setObjectName("WinnerMsgBox")
 
         msg.setWindowTitle("Game Over")
-        msg.setText(f"🏆 {winner_name} wins!")
 
+        
+        msg.setText(f"<div style='text-align:center; font-size:24px; font-weight:bold;'>"
+                    f"🏆 {winner_name} wins! 🏆"
+                    "</div>")
+
+        
+        msg.setIcon(QMessageBox.Icon.NoIcon)
+
+        
         msg.setStandardButtons(QMessageBox.StandardButton.Ok)
 
         ok_button = msg.button(QMessageBox.StandardButton.Ok)
         ok_button.setObjectName("WinnerOkBtn")
+        ok_button.setText("Continue")  
 
+        # Disable window resizing
+        msg.setFixedSize(420, 260)
 
         msg.exec()

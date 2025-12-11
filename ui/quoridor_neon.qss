@@ -534,45 +534,59 @@ QFrame#TurnBar[role="p2"] QLabel#TurnLabel {
     font-weight: bold;
     font-size: 18px;
 }
-
-/* ========================== */
-/* WINNER MESSAGE             */
-/* ========================== */
+/* ============================= */
+/*     WINNER POPUP MESSAGE      */
+/* ============================= */
 
 #WinnerMsgBox {
-    background-color: #08080D;
-    color: #00F6FF;
+    background-color: rgba(0, 0, 0, 180); /* dark overlay */
     border: 2px solid #FF00D4;
     border-radius: 18px;
-    padding: 20px;
+    padding: 12px;
+
+    /* Background image */
+    border-image: url(./ui/assets/pop_up_win3.png) 0 0 0 0 stretch stretch;
+
+    /* Neon glow */
+    box-shadow: 0px 0px 20px #FF00D4;
 }
 
-/* Message text */
+/* Title text */
 #WinnerMsgBox QLabel {
-    color: #00F6FF;
-    font-family: "Poppins Medium";
-    font-size: 26px;
+    color: #00EFFF;
+    font-size: 22px;
     font-weight: bold;
-    qproperty-alignment: AlignCenter;
 }
 
-/* OK Button */
+/* Winner message text inside QMessageBox */
+QMessageBox QLabel {
+    color: #00F6FF;
+    font-size: 20px;
+    background: transparent;
+    padding-top: 50px;   
+}
+
+/* ============================= */
+/*           OK BUTTON           */
+/* ============================= */
+
 #WinnerOkBtn {
-    background-color: #FF00D4;
-    color: white;
-    border-radius: 12px;
-    padding: 14px 18px;
+    background-color: rgba(0, 0, 0, 160);
+    border: 2px solid #00EFFF;
+    border-radius: 10px;
+    padding: 8px 16px;
+    color: #00EFFF;
     font-size: 18px;
     font-weight: bold;
-    border: 2px solid #00F6FF;
 }
 
 #WinnerOkBtn:hover {
-    background-color: #FF4DD9;
-    border-color: #FF4DD9;
+    background-color: #00EFFF;
+    color: #000A12;
+    border: 2px solid #00EFFF;
 }
 
 #WinnerOkBtn:pressed {
-    background-color: #C600A8;
-    border-color: #C600A8;
+    background-color: #008C99;
+    color: white;
 }
