@@ -2,12 +2,13 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QPushButton,QComboBox,
     QCheckBox, QSpinBox, QFrame, QScrollArea
 )
-from PyQt6.QtCore import Qt,pyqtSignal
+from PyQt6.QtCore import Qt, pyqtSignal, QTimer
 from PyQt6.QtGui import QPixmap, QPalette, QBrush
 import os
 
 from .board_widget import BoardWidget
 from game.game_state import GameState
+from ai.ai import MinimaxAI
 
 class GameWindow(QWidget):
     def __init__(self,stacked_widget):
@@ -59,6 +60,7 @@ class GameWindow(QWidget):
     # -------------------------
     def build_center_panel(self):
         layout = QHBoxLayout()
+        layout.setSpacing(50)
 
         # Player cards
         p1_card = self.build_player_card("Player 1", "Reach bottom row", "p1")
@@ -174,5 +176,58 @@ class GameWindow(QWidget):
         new_window = GameWindow(self.stacked_widget)
 
         self.stacked_widget.insertWidget(index, new_window)
-
+        # Note: reset_game logic might need to be adjusted to preserve AI settings if desired,
+        # but for now we follow the existing pattern which resets to default.
+        
         self.stacked_widget.setCurrentIndex(index)
+
+    def start_game(self, ai_enabled: bool, difficulty: str):
+        depth = 3
+        if difficulty == "Easy":
+            depth = 1
+        elif difficulty == "Medium":
+            depth = 2
+        elif difficulty == "Hard":
+            depth = 3
+            
+        self.ai = MinimaxAI(max_depth=depth) if ai_enabled else None
+        
+        # Create new game state
+        self.game = GameState(size=9)
+        if ai_enabled:
+            self.game.players[1].is_ai = True
+        self.game.add_observer(self.on_game_state_change)
+        
+        # Update board reference
+        self.board.game = self.game
+        
+        # Force UI update
+        self.board.update()
+        self.update_turn_bar()
+        
+    def on_game_state_change(self):
+        self.update_turn_bar()
+        
+        if self.game.winner is not None:
+            # Handle game over if needed (maybe show message)
+            pass
+            
+        # If AI is enabled and it is AI turn (player 1)
+        if self.ai and self.game.current == 1 and self.game.winner is None:
+            # Small delay to let UI refresh before AI thinks
+            QTimer.singleShot(100, self.make_ai_move)
+
+    def make_ai_move(self):
+        if self.game.winner is not None or self.game.current != 1:
+            return
+
+        move = self.ai.choose_move(self.game, 1)
+        if move:
+            if move[0] == 'M':
+                # ('M', r, c)
+                self.game.move_pawn(1, move[1], move[2])
+            elif move[0] == 'W':
+                # ('W', orient, r, c)
+                self.game.try_place_wall(1, move[1], move[2], move[3])
+        
+        self.board.update()

@@ -181,7 +181,16 @@ class SetupWindow(QWidget):
         self.stacked_widget.setCurrentIndex(0)
     
     def handle_start(self):
-        ####TO BE MODIFIED####
+        ai_enabled = self.ai_toggle.isChecked()
+        difficulty_str = self.difficulty_combo.currentText()
+        
+        # Map difficulty string to something the game window understands or pass directly
+        # The game window will handle the mapping to AI depth.
+        
+        game_window = self.stacked_widget.widget(4)
+        if hasattr(game_window, 'start_game'):
+            game_window.start_game(ai_enabled, difficulty_str)
+        
         self.stacked_widget.setCurrentIndex(4)
 
     def toggle_ai_mode(self):

@@ -15,7 +15,8 @@ class MainWindow(QWidget):
         self.setObjectName("MainWindow")
         self.setWindowTitle("Quoridor Game")
         self.setWindowIcon(QIcon("ui/assets/icon.ico"))
-        self.setFixedSize(900, 700)
+        self.setMinimumSize(1200, 800)
+        self.resize(1200, 800)
         self.setContentsMargins(0, 0, 0, 0)
         #self.setStyleSheet("QWidget { border: 0px; }") 
         

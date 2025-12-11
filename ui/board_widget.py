@@ -15,7 +15,7 @@ NEON_GRID = QColor(0, 234, 255)   # cyan neon
 NEON_P1 = QColor(0, 255, 255)     # cyan glow
 NEON_P2 = QColor(255, 0, 255)     # magenta glow
 NEON_WALL = QColor(255, 0, 150)   # pink wall
-BOARD_BG = QColor(12, 12, 16)     # very dark
+BOARD_BG = QColor(0, 0, 0, 0)     # transparent
 GRID_SHADOW = QColor(0, 120, 140, 180)
 
 

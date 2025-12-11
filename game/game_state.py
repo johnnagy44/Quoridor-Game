@@ -20,9 +20,18 @@ class GameState:
         self.current: int = 0
         self.winner: Optional[int] = None
         self.history: List[dict] = []  # simple history for undo (shallow serializable snapshots)
+        self.observers = []
 
     def clone(self) -> 'GameState':
-        return deepcopy(self)
+        # Temporarily clear observers to avoid deepcopying UI components (like GameWindow)
+        # which cannot be pickled/deepcopied.
+        obs = self.observers
+        self.observers = []
+        try:
+            new_state = deepcopy(self)
+        finally:
+            self.observers = obs
+        return new_state
 
     def serialize(self) -> dict:
         return {
@@ -83,6 +92,7 @@ class GameState:
         if player_index == 1 and r == 0:
             self.winner = 1
         self.current = 1 - self.current
+        self.notify_observers()
         return True
 
     def can_place_wall(self, orientation: str, wr: int, wc: int) -> bool:
@@ -142,7 +152,15 @@ class GameState:
         self.save_snapshot()
         p.walls -= 1
         self.current = 1 - self.current
+        self.notify_observers()
         return True
 
     def get_winner(self) -> Optional[int]:
         return self.winner
+
+    def add_observer(self, callback):
+        self.observers.append(callback)
+
+    def notify_observers(self):
+        for callback in self.observers:
+            callback()
