@@ -17,6 +17,9 @@ class GameWindow(QWidget):
         self.setWindowTitle("Quoridor - Game Board")
         self.resize(2500, 1950)
         
+        self.p1_name = "Player 1"
+        self.p2_name = "Player 2"
+        self.time_limit = 0
         
         img = os.path.join(os.path.dirname(__file__), "assets", "background.jpg")
         pix = QPixmap(img).scaled(
@@ -63,8 +66,10 @@ class GameWindow(QWidget):
         layout.setSpacing(50)
 
         # Player cards
-        p1_card = self.build_player_card("Player 1", "Reach bottom row", "p1")
-        p2_card = self.build_player_card("Player 2", "Reach top row", "p2")
+        # Player cards
+        # Player cards
+        self.p1_card_frame, self.p1_name_label, self.p1_walls_label = self.build_player_card("Player 1", "Reach bottom row", "p1")
+        self.p2_card_frame, self.p2_name_label, self.p2_walls_label = self.build_player_card("Player 2", "Reach top row", "p2")
 
         
         game_state=GameState(size=9)
@@ -73,11 +78,10 @@ class GameWindow(QWidget):
         self.board = BoardWidget(game_state)
         self.board.moveMade.connect(self.update_turn_bar)
         
-
-        layout.addWidget(p1_card)
+        layout.addWidget(self.p1_card_frame)
         layout.addWidget(self.board, stretch=1)
-        layout.addWidget(p2_card)
-
+        layout.addWidget(self.p2_card_frame)
+        
         return layout
 
     # -------------------------
@@ -104,7 +108,7 @@ class GameWindow(QWidget):
         layout.addWidget(goal_label)
         layout.addStretch()
 
-        return card
+        return card, title, walls
 
 
     # -------------------------
@@ -194,6 +198,13 @@ class GameWindow(QWidget):
         
         # Create new game state
         self.game = GameState(size=9)
+        self.game.players[0].name = self.p1_name
+        self.game.players[1].name = self.p2_name
+        
+        # Update UI labels
+        self.p1_name_label.setText(self.p1_name)
+        self.p2_name_label.setText(self.p2_name)
+
         if ai_enabled:
             self.game.players[1].is_ai = True
         self.game.add_observer(self.on_game_state_change)
@@ -204,13 +215,15 @@ class GameWindow(QWidget):
         # Force UI update
         self.board.update()
         self.update_turn_bar()
+        self.update_walls_labels()
         
     def on_game_state_change(self):
         self.update_turn_bar()
+        self.update_walls_labels()
         
         if self.game.winner is not None:
             # Handle game over if needed (maybe show message)
-            pass
+            self.board.show_winner()
             
         # If AI is enabled and it is AI turn (player 1)
         if self.ai and self.game.current == 1 and self.game.winner is None:
@@ -231,3 +244,10 @@ class GameWindow(QWidget):
                 self.game.try_place_wall(1, move[1], move[2], move[3])
         
         self.board.update()
+
+    def update_walls_labels(self):
+        if hasattr(self, 'game') and self.game:
+            w1 = self.game.players[0].walls
+            w2 = self.game.players[1].walls
+            self.p1_walls_label.setText(f"Walls remaining: {w1}")
+            self.p2_walls_label.setText(f"Walls remaining: {w2}")

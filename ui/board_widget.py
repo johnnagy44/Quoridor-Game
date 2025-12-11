@@ -281,7 +281,7 @@ class BoardWidget(QWidget):
                             f(row, col)
                         moved = True
                         self.moveMade.emit()
-                        self.after_move_logic()
+                        # self.after_move_logic() - Handled by GameWindow via on_game_state_change
                         break
                     except Exception as e:
                         print("Error calling", name, e)
@@ -353,143 +353,29 @@ class BoardWidget(QWidget):
     # We'll attempt a small list of common method names for can_place & place_wall.
     # If the game's API is missing, we print instructions so you can adapt quickly.
     # -------------------------------------------------
+    # -------------------------------------------------
+    # TRY PLACE WALL
+    # -------------------------------------------------
     def try_place_wall(self, r, c, orient):
-        # check bounds
-        if not (0 <= r < self.size - 1 and 0 <= c < self.size - 1):
-            return
-
-        # 1) check if game offers a can_place function
-        can_place_funcs = [
-            "can_place_wall", "canPlaceWall", "is_valid_wall", "valid_wall", "canPlace",
-            "can_place"
-        ]
-        can_place = None
-        for name in can_place_funcs:
-            f = getattr(self.game, name, None)
-            if callable(f):
-                try:
-                    # many variants: (r,c,orient) or (player,r,c,orient)
-                    try:
-                        ok = f(r, c, orient)
-                    except TypeError:
-                        ok = f(getattr(self.game, "current", 0), r, c, orient)
-                    can_place = bool(ok)
-                    break
-                except Exception:
-                    pass
-
-        if can_place is False:
-            # immediate rejection
-            self._flash_invalid_wall(r, c, orient)
-            return
-
-        # If can_place is None (unknown), we still try to place, but we will rely on path-check and game exceptions.
-        # 2) call path-check (if available) to ensure placing the wall doesn't block all paths
-        path_check_funcs = [
-            "path_exists_after_wall", "would_block_path", "path_ok_after_wall",
-            "path_exists_if_place_wall", "validate_wall_path"
-        ]
-        path_ok = None
-        for name in path_check_funcs:
-            f = getattr(self.game, name, None)
-            if callable(f):
-                try:
-                    try:
-                        path_ok = f(r, c, orient)
-                    except TypeError:
-                        path_ok = f(getattr(self.game, "current", 0), r, c, orient)
-                    break
-                except Exception:
-                    pass
-
-        if path_ok is False:
-            self._flash_invalid_wall(r, c, orient)
-            return
-
-        # 3) place the wall by calling a place method. Try several names.
-        place_funcs = ["place_wall", "placeWall", "add_wall", "addWall", "set_wall", "setWall"]
-        placed = False
-        for name in place_funcs:
-            f = getattr(self.game, name, None)
-            if callable(f):
-                try:
-                    # many APIs: (r,c,orient) or (player,r,c,orient)
-                    try:
-                        f(r, c, orient)
-                    except TypeError:
-                        f(getattr(self.game, "current", 0), r, c, orient)
-                    placed = True
-                    break
-                except Exception as e:
-                    print("Error calling", name, e)
-
-        if not placed:
-            # final fallback: try mutating the board directly if the structure is present
-            # This is best-effort and assumes h_walls/v_walls boolean 2D arrays.
-            board = getattr(self.game, "board", None)
-            if board is not None:
-                if orient == "h" and getattr(board, "h_walls", None) is not None:
-                    if not board.h_walls[r][c]:
-                        board.h_walls[r][c] = True
-                        placed = True
-                elif orient == "v" and getattr(board, "v_walls", None) is not None:
-                    if not board.v_walls[r][c]:
-                        board.v_walls[r][c] = True
-                        placed = True
-
-        if not placed:
-            print("WARNING: couldn't call any known place_wall method on your game object.")
-            print("Please add a method like `place_wall(r,c,orient)` or give me the exact API name.")
-            self._flash_invalid_wall(r, c, orient)
-            return
-
-        # 4) final path check if unknown earlier: if we didn't get an affirmative path_ok earlier,
-        # try to call a path-checking method on the board/game (common names)
-        if path_ok is None:
-            post_ok = None
-            for name in path_check_funcs:
-                f = getattr(self.game, name, None)
-                if callable(f):
-                    try:
-                        try:
-                            post_ok = f(r, c, orient)
-                        except TypeError:
-                            post_ok = f(getattr(self.game, "current", 0), r, c, orient)
-                        break
-                    except Exception:
-                        pass
-            if post_ok is False:
-                # revert the wall if we mutated board directly and path check failed:
-                print("Placement would block path; reverting.")
-                # attempt to revert by calling remove function or undoing direct write
-                revert_funcs = ["remove_wall", "removeWall", "undo_wall"]
-                reverted = False
-                for name in revert_funcs:
-                    f = getattr(self.game, name, None)
-                    if callable(f):
-                        try:
-                            try:
-                                f(r, c, orient)
-                            except TypeError:
-                                f(getattr(self.game, "current", 0), r, c, orient)
-                            reverted = True
-                            break
-                        except Exception:
-                            pass
-                # if we directly mutated the board, revert it:
-                board = getattr(self.game, "board", None)
-                if not reverted and board is not None:
-                    if orient == "h" and getattr(board, "h_walls", None) is not None:
-                        board.h_walls[r][c] = False
-                    elif orient == "v" and getattr(board, "v_walls", None) is not None:
-                        board.v_walls[r][c] = False
-
-                self._flash_invalid_wall(r, c, orient)
-                return
-
-        # success: update UI
-        self.wall_preview = None
-        self.update()
+        # 1) Direct call to GameState API
+        # GameState.try_place_wall(player_index, orientation, r, c) returns True/False
+        # validation, wall decrement, and turn switching happen inside GameState.
+        if hasattr(self.game, "try_place_wall") and hasattr(self.game, "current"):
+            # Ensure orientation is uppercase 'H' or 'V' as expected by GameState
+            orient_upper = orient.upper()
+            try:
+                success = self.game.try_place_wall(self.game.current, orient_upper, r, c)
+                if success:
+                    # Successful placement
+                    self.wall_preview = None
+                    self.moveMade.emit()
+                    self.update()
+                    return
+            except Exception as e:
+                print(f"Error calling try_place_wall: {e}")
+        
+        # If we reach here, placement failed or API missing
+        self._flash_invalid_wall(r, c, orient)
 
     # -------------------------------------------------
     # Visual flash for invalid wall placement
