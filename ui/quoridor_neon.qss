@@ -535,3 +535,44 @@ QFrame#TurnBar[role="p2"] QLabel#TurnLabel {
     font-size: 18px;
 }
 
+/* ========================== */
+/* WINNER MESSAGE             */
+/* ========================== */
+
+#WinnerMsgBox {
+    background-color: #08080D;
+    color: #00F6FF;
+    border: 2px solid #FF00D4;
+    border-radius: 18px;
+    padding: 20px;
+}
+
+/* Message text */
+#WinnerMsgBox QLabel {
+    color: #00F6FF;
+    font-family: "Poppins Medium";
+    font-size: 26px;
+    font-weight: bold;
+    qproperty-alignment: AlignCenter;
+}
+
+/* OK Button */
+#WinnerOkBtn {
+    background-color: #FF00D4;
+    color: white;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 18px;
+    font-weight: bold;
+    border: 2px solid #00F6FF;
+}
+
+#WinnerOkBtn:hover {
+    background-color: #FF4DD9;
+    border-color: #FF4DD9;
+}
+
+#WinnerOkBtn:pressed {
+    background-color: #C600A8;
+    border-color: #C600A8;
+}

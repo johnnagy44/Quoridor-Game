@@ -188,6 +188,12 @@ class SetupWindow(QWidget):
         # The game window will handle the mapping to AI depth.
         
         game_window = self.stacked_widget.widget(4)
+        
+        ##to be modified 
+        game_window.players[0].name = self.p1.text()
+        game_window.player2_name = self.p2.text()
+        game_window.time_limit = int(self.time_box.text())
+
         if hasattr(game_window, 'start_game'):
             game_window.start_game(ai_enabled, difficulty_str)
         

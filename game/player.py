@@ -8,6 +8,7 @@ class Player:
     walls: int = 10
     is_ai: bool = False
     id: int = 0
+    name: str=""
 
     def pos(self):
         return (self.r, self.c)

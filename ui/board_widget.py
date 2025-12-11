@@ -1,5 +1,4 @@
-# board_widget_ui.py
-from PyQt6.QtWidgets import QWidget
+from PyQt6.QtWidgets import QWidget,QMessageBox
 from PyQt6.QtGui import QPainter, QColor, QPen, QBrush
 from PyQt6.QtCore import Qt, QTimer,pyqtSignal
 
@@ -282,6 +281,7 @@ class BoardWidget(QWidget):
                             f(row, col)
                         moved = True
                         self.moveMade.emit()
+                        self.after_move_logic()
                         break
                     except Exception as e:
                         print("Error calling", name, e)
@@ -502,3 +502,35 @@ class BoardWidget(QWidget):
     def _clear_invalid_flash(self):
         self.invalid_flash = None
         self.update()
+
+    def after_move_logic(self):
+        # Check for winner
+        if self.game.get_winner() is not None:
+            self.show_winner()
+            return
+
+        # If next player is AI
+        #if self.game.players[self.game.current].is_ai:
+        #    do_ai_turn()
+
+
+    def show_winner(self):
+        winner_index = self.game.get_winner()
+        if winner_index is None:
+            return
+
+        winner_name = self.game.players[winner_index].name
+
+        msg = QMessageBox(self)
+        msg.setObjectName("WinnerMsgBox")
+
+        msg.setWindowTitle("Game Over")
+        msg.setText(f"🏆 {winner_name} wins!")
+
+        msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+
+        ok_button = msg.button(QMessageBox.StandardButton.Ok)
+        ok_button.setObjectName("WinnerOkBtn")
+
+
+        msg.exec()
