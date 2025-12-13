@@ -124,6 +124,16 @@ class SetupWindow(QWidget):
         scroll_layout.addWidget(t_label)
         scroll_layout.addWidget(self.time_box)
 
+        # ---- Board Size ----
+        bs_label = QLabel("setupField")
+        bs_label.setObjectName("panelText")
+        self.board_size_combo = QComboBox()
+        self.board_size_combo.addItems(["9×9", "11×11", "13×13"])
+        self.board_size_combo.setObjectName("gridSizeCombo")
+        
+        scroll_layout.addWidget(bs_label)
+        scroll_layout.addWidget(self.board_size_combo)
+
         # ---- Rules Panel ----
         rules_frame = QFrame()
         rules_frame.setObjectName("rulesPanel")
@@ -178,6 +188,20 @@ class SetupWindow(QWidget):
     # ==========================================================
     # UI Logic
     # ==========================================================
+    def showEvent(self, event):
+        # Try to sync with SettingsWindow default
+        try:
+            settings_window = self.stacked_widget.widget(2)
+            if hasattr(settings_window, 'board_size'):
+                default_size = settings_window.selected_grid
+                # map 9 -> 0, 11 -> 1, 13 -> 2
+                index_map = {9: 0, 11: 1, 13: 2}
+                if default_size in index_map:
+                    self.board_size_combo.setCurrentIndex(index_map[default_size])
+        except:
+            pass
+        super().showEvent(event)
+
     def handle_back(self):
         self.stacked_widget.setCurrentIndex(MAIN_MENU)
     
@@ -187,6 +211,13 @@ class SetupWindow(QWidget):
         
         game_window = self.stacked_widget.widget(GAME_WINDOW)
         
+        # Get board size from combo box
+        size_str = self.board_size_combo.currentText() # "9×9"
+        try:
+            board_size = int(size_str.split('×')[0])
+        except:
+            board_size = 9
+        
         game_window.p1_name = self.p1.text()
         game_window.p2_name = self.p2.text()
         try:
@@ -195,9 +226,9 @@ class SetupWindow(QWidget):
             game_window.time_limit = 0
 
         if hasattr(game_window, 'start_game'):
-            game_window.start_game(ai_enabled, difficulty_str)
+            game_window.start_game(ai_enabled, difficulty_str, board_size)
         
-        self.stacked_widget.setCurrentIndex(4)
+        self.stacked_widget.setCurrentIndex(GAME_WINDOW)
 
     def toggle_ai_mode(self):
         if self.ai_toggle.isChecked():

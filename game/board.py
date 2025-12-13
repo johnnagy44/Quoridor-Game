@@ -19,6 +19,15 @@ class Board:
         # can't place where one already exists
         if self.h_walls[wr][wc]:
             return False
+        # Check for overlap with left neighbor
+        if wc > 0 and self.h_walls[wr][wc-1]:
+            return False
+        # Check for overlap with right neighbor
+        if wc < s - 1 and self.h_walls[wr][wc+1]:
+            return False
+        # Check for intersection with vertical wall
+        if self.v_walls[wr][wc]:
+            return False
         return True
 
     def can_place_vertical(self, wr: int, wc: int) -> bool:
@@ -26,6 +35,15 @@ class Board:
         if not (0 <= wr < s and 0 <= wc < s):
             return False
         if self.v_walls[wr][wc]:
+            return False
+        # Check for overlap with top neighbor
+        if wr > 0 and self.v_walls[wr-1][wc]:
+            return False
+        # Check for overlap with bottom neighbor
+        if wr < s - 1 and self.v_walls[wr+1][wc]:
+            return False
+        # Check for intersection with horizontal wall
+        if self.h_walls[wr][wc]:
             return False
         return True
 

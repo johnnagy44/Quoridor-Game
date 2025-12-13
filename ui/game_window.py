@@ -15,7 +15,7 @@ class GameWindow(QWidget):
         super().__init__()
         self.stacked_widget = stacked_widget
         self.setWindowTitle("Quoridor - Game Board")
-        self.resize(2500, 1950)
+        self.resize(1200, 900)
         
         self.p1_name = "Player 1"
         self.p2_name = "Player 2"
@@ -185,7 +185,7 @@ class GameWindow(QWidget):
         
         self.stacked_widget.setCurrentIndex(index)
 
-    def start_game(self, ai_enabled: bool, difficulty: str):
+    def start_game(self, ai_enabled: bool, difficulty: str, board_size: int = 9):
         depth = 3
         if difficulty == "Easy":
             depth = 1
@@ -197,7 +197,7 @@ class GameWindow(QWidget):
         self.ai = MinimaxAI(max_depth=depth) if ai_enabled else None
         
         # Create new game state
-        self.game = GameState(size=9)
+        self.game = GameState(size=board_size)
         self.game.players[0].name = self.p1_name
         self.game.players[1].name = self.p2_name
         
@@ -211,6 +211,7 @@ class GameWindow(QWidget):
         
         # Update board reference
         self.board.game = self.game
+        self.board.size = board_size
         
         # Force UI update
         self.board.update()

@@ -124,7 +124,7 @@ class SettingsWindow(QWidget):
         self.sound_toggle.setChecked(True)
         self.sound_toggle.clicked.connect(self.update_toggle_text)
         self.sound_toggle.setFixedWidth(120)
-        #self.sound_toggle.setObjectName("purple")
+        
 
         row.addWidget(lbl)
         row.addStretch()
@@ -224,6 +224,7 @@ class SettingsWindow(QWidget):
             "show_valid": self.cb_valid.isChecked(),
             "animate": self.cb_anim.isChecked(),
         }
+        self.board_size=self.selected_grid
         
          # show saved message
         self.saved_msg.setText("Settings saved!")

@@ -2,9 +2,9 @@ from PyQt6.QtWidgets import QWidget,QMessageBox
 from PyQt6.QtGui import QPainter, QColor, QPen, QBrush
 from PyQt6.QtCore import Qt, QTimer,pyqtSignal
 
-CELL = 60
-OFFSET = 10
-WALL_THICK = 10
+# Removed fixed CELL size
+OFFSET_RATIO = 0.16
+WALL_THICK_RATIO = 0.16
 WALL_PREVIEW_ALPHA = 100
 WALL_GLOW_ALPHA = 120
 FLASH_DURATION_MS = 600
@@ -39,7 +39,7 @@ class BoardWidget(QWidget):
 
         self.game = game_state
         self.size = getattr(game_state.board, "size", None) or getattr(game_state, "size", 9)
-        self.setMinimumSize(self.size * CELL, self.size * CELL)
+        self.setMinimumSize(400, 400) # Set a reasonable minimum size
 
         # hover
         self.hover_row = None
@@ -47,6 +47,10 @@ class BoardWidget(QWidget):
         self.wall_preview = None  # tuple (r,c,orient) or None
         self.invalid_flash = None  # tuple (r,c,orient) being flashed red
         self.setMouseTracking(True)
+
+    @property
+    def cell_size(self):
+        return min(self.width(), self.height()) / self.size
 
     # -------------------------------------------------
     # PAINT EVENT
@@ -73,18 +77,19 @@ class BoardWidget(QWidget):
     # NEON GRID
     # -------------------------------------------------
     def draw_grid(self, p: QPainter):
+        cs = self.cell_size
         for r in range(self.size):
             for c in range(self.size):
-                x = c * CELL
-                y = r * CELL
+                x = c * cs
+                y = r * cs
 
                 # shadow under grid cell
                 p.setPen(QPen(GRID_SHADOW, 12))
-                p.drawRect(x, y, CELL, CELL)
+                p.drawRect(int(x), int(y), int(cs), int(cs))
 
                 # actual neon cell border
                 p.setPen(QPen(NEON_GRID, 2))
-                p.drawRect(x, y, CELL, CELL)
+                p.drawRect(int(x), int(y), int(cs), int(cs))
 
     # -------------------------------------------------
     # CELL HOVER GLOW
@@ -93,41 +98,44 @@ class BoardWidget(QWidget):
         if self.hover_row is None:
             return
 
-        x = self.hover_col * CELL
-        y = self.hover_row * CELL
+        cs = self.cell_size
+        x = self.hover_col * cs
+        y = self.hover_row * cs
 
         glow = QColor(0, 255, 255, 80)
         p.setBrush(QBrush(glow))
         p.setPen(Qt.PenStyle.NoPen)
-        p.drawRect(x, y, CELL, CELL)
+        p.drawRect(int(x), int(y), int(cs), int(cs))
 
     # -------------------------------------------------
     # PLAYERS (NEON GLOWING)
     # -------------------------------------------------
     def draw_players(self, p: QPainter):
         p.setPen(Qt.PenStyle.NoPen)
+        cs = self.cell_size
+        offset = cs * OFFSET_RATIO
 
         # Player 1
         p1 = self.game.players[0]
-        x = p1.c * CELL + OFFSET
-        y = p1.r * CELL + OFFSET
+        x = p1.c * cs + offset
+        y = p1.r * cs + offset
 
         p.setBrush(QBrush(QColor(0, 255, 255, 120)))
-        p.drawEllipse(x - 5, y - 5, CELL - 2*OFFSET + 10, CELL - 2*OFFSET + 10)
+        p.drawEllipse(int(x - 5), int(y - 5), int(cs - 2*offset + 10), int(cs - 2*offset + 10))
 
         p.setBrush(QBrush(NEON_P1))
-        p.drawEllipse(x, y, CELL - 2*OFFSET, CELL - 2*OFFSET)
+        p.drawEllipse(int(x), int(y), int(cs - 2*offset), int(cs - 2*offset))
 
         # Player 2
         p2 = self.game.players[1]
-        x = p2.c * CELL + OFFSET
-        y = p2.r * CELL + OFFSET
+        x = p2.c * cs + offset
+        y = p2.r * cs + offset
 
         p.setBrush(QBrush(QColor(255, 0, 255, 120)))
-        p.drawEllipse(x - 5, y - 5, CELL - 2*OFFSET + 10, CELL - 2*OFFSET + 10)
+        p.drawEllipse(int(x - 5), int(y - 5), int(cs - 2*offset + 10), int(cs - 2*offset + 10))
 
         p.setBrush(QBrush(NEON_P2))
-        p.drawEllipse(x, y, CELL - 2*OFFSET, CELL - 2*OFFSET)
+        p.drawEllipse(int(x), int(y), int(cs - 2*offset), int(cs - 2*offset))
 
     # -------------------------------------------------
     # NEON WALLS (PINK)
@@ -136,6 +144,9 @@ class BoardWidget(QWidget):
         p.setPen(Qt.PenStyle.NoPen)
         glow = QColor(255, 0, 150, WALL_GLOW_ALPHA)
         p.setBrush(glow)
+        
+        cs = self.cell_size
+        wall_thick = cs * WALL_THICK_RATIO
 
         # draw horizontal walls from game.board.h_walls if present
         h_walls = getattr(self.game.board, "h_walls", None)
@@ -143,15 +154,15 @@ class BoardWidget(QWidget):
             for r in range(self.size - 1):
                 for c in range(self.size - 1):
                     if h_walls[r][c]:
-                        x = c * CELL
-                        y = (r + 1) * CELL - WALL_THICK // 2
+                        x = c * cs
+                        y = (r + 1) * cs - wall_thick / 2
 
                         # glow
-                        p.drawRect(x - 3, y - 3, CELL * 2 + 6, WALL_THICK + 6)
+                        p.drawRect(int(x - 3), int(y - 3), int(cs * 2 + 6), int(wall_thick + 6))
 
                         # main neon
                         p.setBrush(QBrush(NEON_WALL))
-                        p.drawRect(x, y, CELL * 2, WALL_THICK)
+                        p.drawRect(int(x), int(y), int(cs * 2), int(wall_thick))
 
                         p.setBrush(glow)
 
@@ -161,13 +172,13 @@ class BoardWidget(QWidget):
             for r in range(self.size - 1):
                 for c in range(self.size - 1):
                     if v_walls[r][c]:
-                        x = (c + 1) * CELL - WALL_THICK // 2
-                        y = r * CELL
+                        x = (c + 1) * cs - wall_thick / 2
+                        y = r * cs
 
-                        p.drawRect(x - 3, y - 3, WALL_THICK + 6, CELL * 2 + 6)
+                        p.drawRect(int(x - 3), int(y - 3), int(wall_thick + 6), int(cs * 2 + 6))
 
                         p.setBrush(QBrush(NEON_WALL))
-                        p.drawRect(x, y, WALL_THICK, CELL * 2)
+                        p.drawRect(int(x), int(y), int(wall_thick), int(cs * 2))
 
                         p.setBrush(glow)
 
@@ -178,20 +189,23 @@ class BoardWidget(QWidget):
         if not self.wall_preview:
             return
         r, c, orient = self.wall_preview
+        cs = self.cell_size
+        wall_thick = cs * WALL_THICK_RATIO
+        
         if orient == "h":
-            x = c * CELL
-            y = (r + 1) * CELL - WALL_THICK // 2
+            x = c * cs
+            y = (r + 1) * cs - wall_thick / 2
             preview = QColor(255, 0, 150, WALL_PREVIEW_ALPHA)
             p.setBrush(QBrush(preview))
             p.setPen(Qt.PenStyle.NoPen)
-            p.drawRect(x, y, CELL * 2, WALL_THICK)
+            p.drawRect(int(x), int(y), int(cs * 2), int(wall_thick))
         else:  # 'v'
-            x = (c + 1) * CELL - WALL_THICK // 2
-            y = r * CELL
+            x = (c + 1) * cs - wall_thick / 2
+            y = r * cs
             preview = QColor(255, 0, 150, WALL_PREVIEW_ALPHA)
             p.setBrush(QBrush(preview))
             p.setPen(Qt.PenStyle.NoPen)
-            p.drawRect(x, y, WALL_THICK, CELL * 2)
+            p.drawRect(int(x), int(y), int(wall_thick), int(cs * 2))
 
     # -------------------------------------------------
     # INVALID FLASH (red) when trying to place an illegal wall
@@ -200,25 +214,29 @@ class BoardWidget(QWidget):
         if not self.invalid_flash:
             return
         r, c, orient = self.invalid_flash
+        cs = self.cell_size
+        wall_thick = cs * WALL_THICK_RATIO
+        
         red = QColor(255, 60, 80, 200)
         p.setBrush(QBrush(red))
         p.setPen(Qt.PenStyle.NoPen)
         if orient == "h":
-            x = c * CELL
-            y = (r + 1) * CELL - WALL_THICK // 2
-            p.drawRect(x - 2, y - 2, CELL * 2 + 4, WALL_THICK + 4)
+            x = c * cs
+            y = (r + 1) * cs - wall_thick / 2
+            p.drawRect(int(x - 2), int(y - 2), int(cs * 2 + 4), int(wall_thick + 4))
         else:
-            x = (c + 1) * CELL - WALL_THICK // 2
-            y = r * CELL
-            p.drawRect(x - 2, y - 2, WALL_THICK + 4, CELL * 2 + 4)
+            x = (c + 1) * cs - wall_thick / 2
+            y = r * cs
+            p.drawRect(int(x - 2), int(y - 2), int(wall_thick + 4), int(cs * 2 + 4))
 
     # -------------------------------------------------
     # MOUSE MOVEMENT: keeps hover + wall preview
     # -------------------------------------------------
     def mouseMoveEvent(self, event):
         pos = event.position()
-        col = int(pos.x() // CELL)
-        row = int(pos.y() // CELL)
+        cs = self.cell_size
+        col = int(pos.x() // cs)
+        row = int(pos.y() // cs)
 
         if 0 <= row < self.size and 0 <= col < self.size:
             self.hover_row = row
@@ -238,8 +256,9 @@ class BoardWidget(QWidget):
     # -------------------------------------------------
     def mousePressEvent(self, event):
         pos = event.position()
-        col = int(pos.x() // CELL)
-        row = int(pos.y() // CELL)
+        cs = self.cell_size
+        col = int(pos.x() // cs)
+        row = int(pos.y() // cs)
 
         if event.button() == Qt.MouseButton.LeftButton:
             self.try_pawn_move(row, col)
@@ -299,14 +318,15 @@ class BoardWidget(QWidget):
     # Vertical similar: wall between columns c and c+1 spanning rows r and r+1
     # -------------------------------------------------
     def _detect_wall_near(self, xpix: float, ypix: float):
+        cs = self.cell_size
         # clamp inside board bounds
-        if xpix < 0 or ypix < 0 or xpix > self.size * CELL or ypix > self.size * CELL:
+        if xpix < 0 or ypix < 0 or xpix > self.size * cs or ypix > self.size * cs:
             return None
 
-        col = int(xpix // CELL)
-        row = int(ypix // CELL)
-        rx = xpix - col * CELL
-        ry = ypix - row * CELL
+        col = int(xpix // cs)
+        row = int(ypix // cs)
+        rx = xpix - col * cs
+        ry = ypix - row * cs
 
         # check bottom horizontal band of this cell (between row and row+1)
         # horizontal wall is centered at y ~= CELL (bottom edge of cell)
@@ -319,7 +339,7 @@ class BoardWidget(QWidget):
         # 1) horizontal candidate where wall sits between row and row+1,
         # spanning columns col and col+1 (so c must be <= size-2)
         # the screen y of that band is y = (row+1)*CELL
-        y_of_bot_edge = (row + 1) * CELL
+        y_of_bot_edge = (row + 1) * cs
         dy = abs(ypix - y_of_bot_edge)
         if dy <= HIT_MARGIN:
             # choose c such that wall will cover col and col+1 if possible, else col-1 & col
@@ -334,7 +354,7 @@ class BoardWidget(QWidget):
 
         # 2) vertical candidate where wall sits between col and col+1,
         # spanning rows row and row+1; screen x ~ (col+1)*CELL
-        x_of_right_edge = (col + 1) * CELL
+        x_of_right_edge = (col + 1) * cs
         dx = abs(xpix - x_of_right_edge)
         if dx <= HIT_MARGIN:
             if row <= self.size - 2:
