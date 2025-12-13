@@ -24,10 +24,6 @@ def bfs_has_path(board: Board, start: Tuple[int,int], goal_rows: List[int]) -> b
     return False
 
 def bfs_shortest_path_length(board: Board, start: Tuple[int,int], goal_rows: List[int]) -> Optional[int]:
-    """
-    Return shortest number of steps to reach any cell with row in goal_rows.
-    If no path, return None.
-    """
     q = deque([(start, 0)])
     visited = set()
     while q:

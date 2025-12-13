@@ -1,6 +1,6 @@
-from PyQt6.QtWidgets import QWidget, QPushButton, QVBoxLayout,QStackedWidget
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon,QPixmap
+from PyQt6.QtWidgets import QWidget, QVBoxLayout,QStackedWidget
+
+from PyQt6.QtGui import QIcon
 from .game_window import GameWindow
 from .settings_window import SettingsWindow
 from .main_menu import MainMenu
@@ -18,7 +18,7 @@ class MainWindow(QWidget):
         self.setMinimumSize(1200, 800)
         self.resize(1200, 800)
         self.setContentsMargins(0, 0, 0, 0)
-        #self.setStyleSheet("QWidget { border: 0px; }") 
+         
         
 
         self.stack = QStackedWidget()

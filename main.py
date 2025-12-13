@@ -2,9 +2,8 @@ import sys
 from PyQt6.QtWidgets import QApplication,QStackedWidget
 import ctypes
 from PyQt6.QtGui import QIcon,QFontDatabase
-from ui.main_menu import MainMenu
 from ui.main_window import MainWindow
-from ui.settings_window import SettingsWindow
+
 
 
 def load_fonts():
@@ -25,9 +24,7 @@ if __name__ == "__main__":
     load_fonts()
     load_styles(app)
 
-    #menu = MainMenu()
     menu=MainWindow()
-    #menu=SettingsWindow()
     menu.show()
 
     sys.exit(app.exec())

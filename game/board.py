@@ -3,17 +3,6 @@ from typing import List, Tuple
 BOARD_N = 9  # default size (9x9)
 
 class Board:
-    """
-    Board representation for Quoridor.
-
-    - h_walls[r][c] : horizontal wall with top-left at intersection (r,c).
-      Valid indices: r,c in 0..BOARD_N-2
-      A horizontal wall at (r,c) blocks the edge between cells (r,c) <-> (r+1,c)
-      and (r,c+1) <-> (r+1,c+1).
-    - v_walls[r][c] : vertical wall with top-left at intersection (r,c).
-      A vertical wall at (r,c) blocks the edge between (r,c) <-> (r,c+1)
-      and (r+1,c) <-> (r+1,c+1).
-    """
     def __init__(self, size: int = BOARD_N):
         self.size = size
         s = size - 1
@@ -53,10 +42,6 @@ class Board:
         self.v_walls[wr][wc] = False
 
     def is_blocked(self, r1:int, c1:int, r2:int, c2:int) -> bool:
-        """
-        Return True if movement between adjacent cells (r1,c1) and (r2,c2) is blocked by a wall.
-        Non-adjacent moves return True (blocked).
-        """
         if not (self.inside(r1,c1) and self.inside(r2,c2)):
             return True
         dr = r2 - r1

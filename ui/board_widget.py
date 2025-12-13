@@ -428,6 +428,6 @@ class BoardWidget(QWidget):
         ok_button.setText("Continue")  
 
         # Disable window resizing
-        msg.setFixedSize(420, 260)
+        msg.setFixedSize(400, 300)
 
         msg.exec()

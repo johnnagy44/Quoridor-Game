@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Player:
-    """Simple player state for Quoridor."""
+    
     r: int
     c: int
     walls: int = 10

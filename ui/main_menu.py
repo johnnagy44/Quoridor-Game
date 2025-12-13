@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QPushButton, QHBoxLayout,QStackedWidget
+    QWidget, QVBoxLayout, QLabel, QPushButton,QApplication
 )
 from PyQt6.QtGui import QIcon, QFont
 from PyQt6.QtCore import Qt
@@ -7,6 +7,9 @@ from PyQt6.QtCore import QSize
 from PyQt6.QtGui import QPixmap, QPalette, QBrush
 import os
 
+HOW_TO_PLAY_PAGE=1
+SETTINGS_PAGE=2
+SETUP_PAGE=3
 
 class MainMenu(QWidget):
     def __init__(self, stacked_widget):
@@ -79,6 +82,7 @@ class MainMenu(QWidget):
         btn_new.clicked.connect(self.open_game)
         btn_how.clicked.connect(self.open_how_to_play)
         btn_set.clicked.connect(self.open_settings)
+        btn_exit.clicked.connect(self.exit_app)
         
         
         
@@ -114,11 +118,15 @@ class MainMenu(QWidget):
 
         return btn
     
+    
     def open_how_to_play(self):
-        self.stacked_widget.setCurrentIndex(1)   # Switch to HowToPlay page
+        self.stacked_widget.setCurrentIndex(HOW_TO_PLAY_PAGE)  
 
     def open_settings(self):
-        self.stacked_widget.setCurrentIndex(2)
+        self.stacked_widget.setCurrentIndex(SETTINGS_PAGE)
         
     def open_game(self):
-        self.stacked_widget.setCurrentIndex(3)
+        self.stacked_widget.setCurrentIndex(SETUP_PAGE)
+    
+    def exit_app(self):
+        QApplication.quit()

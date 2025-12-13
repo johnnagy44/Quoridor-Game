@@ -7,7 +7,8 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap, QPalette, QBrush
 import os
 
-
+GAME_WINDOW=4
+MAIN_MENU=0
 class SetupWindow(QWidget):
     def __init__(self, stacked_widget):
         super().__init__()
@@ -178,16 +179,13 @@ class SetupWindow(QWidget):
     # UI Logic
     # ==========================================================
     def handle_back(self):
-        self.stacked_widget.setCurrentIndex(0)
+        self.stacked_widget.setCurrentIndex(MAIN_MENU)
     
     def handle_start(self):
         ai_enabled = self.ai_toggle.isChecked()
         difficulty_str = self.difficulty_combo.currentText()
         
-        # Map difficulty string to something the game window understands or pass directly
-        # The game window will handle the mapping to AI depth.
-        
-        game_window = self.stacked_widget.widget(4)
+        game_window = self.stacked_widget.widget(GAME_WINDOW)
         
         game_window.p1_name = self.p1.text()
         game_window.p2_name = self.p2.text()

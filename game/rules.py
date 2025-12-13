@@ -3,10 +3,7 @@ from .board import Board
 from .player import Player
 
 def legal_moves(board: Board, players: List[Player], player_index: int) -> List[Tuple[int,int]]:
-    """
-    Return a list of legal destination cells for the player's pawn.
-    Implements: orthogonal moves, jump over opponent, diagonal around opponent when jump blocked.
-    """
+
     p = players[player_index]
     opp = players[1 - player_index]
     r, c = p.r, p.c

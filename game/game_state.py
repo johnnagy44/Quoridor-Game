@@ -6,10 +6,6 @@ from .rules import legal_moves
 from .pathfinding import bfs_has_path
 
 class GameState:
-    """
-    High-level game state API to manage players, turns, moves, and wall placements.
-    UI should call these methods. GameState is independent of PyQt.
-    """
     def __init__(self, size: int = 9):
         self.board = Board(size)
         mid = size // 2
