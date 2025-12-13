@@ -1,6 +1,8 @@
 from PyQt6.QtWidgets import QWidget,QMessageBox
 from PyQt6.QtGui import QPainter, QColor, QPen, QBrush
 from PyQt6.QtCore import Qt, QTimer,pyqtSignal
+import os
+from utils import resource_path
 
 # Removed fixed CELL size
 OFFSET_RATIO = 0.16
@@ -20,18 +22,6 @@ GRID_SHADOW = QColor(0, 120, 140, 180)
 
 class BoardWidget(QWidget):
     moveMade = pyqtSignal()
-    """
-    Playable board widget:
-      - left click: pawn move
-      - right click: place wall (auto-detect orientation)
-      - hover: shows cell glow and wall preview
-    It will attempt to call game methods using common names:
-      - pawn movement: game.legal_moves(player), game.move_pawn(player, r, c)
-      - wall placement: game.can_place_wall(r, c, orient) OR game.canPlaceWall(...)
-                        game.place_wall(r, c, orient) OR game.placeWall(...)
-      - path checking after placement: game.path_exists_after_wall(r,c,orient) OR game.would_block_path(...)
-    If your game API uses different names adapt the small helper methods below.
-    """
     def __init__(self, game_state, parent=None):
         super().__init__(parent)
         self.setObjectName("BoardWidget_Neon")
@@ -447,7 +437,37 @@ class BoardWidget(QWidget):
         ok_button.setObjectName("WinnerOkBtn")
         ok_button.setText("Continue")  
 
+        # Dynamically replace the placeholder in the QSS file with the correct path
+        qss_path = resource_path(os.path.join(os.path.dirname(__file__), "assets", "quoridor_neon.qss"))
+        with open(qss_path, "r") as file:
+            qss = file.read()
+
+        # Dynamically resolve the path to the background image
+        bg_path = resource_path(os.path.join(os.path.dirname(__file__), "assets", "pop_up_win3.png"))
+
+        # Ensure the path is relative for QSS compatibility
+        relative_bg_path = bg_path.replace("\\", "/")
+
+        # Replace the placeholder in the QSS file
+        qss = qss.replace("PLACEHOLDER_WINNER_BG", relative_bg_path)
+
+        # Apply the updated QSS to the QMessageBox
+        msg.setStyleSheet(qss)
+        print("Updated QSS applied to QMessageBox with resolved background image path.")
+
+        # Debug: Verify pixmap loading
+        if not os.path.exists(bg_path):
+            print("Background image not found at:", bg_path)
+
         # Disable window resizing
         msg.setFixedSize(400, 300)
+
+        # Debug: Verify QSS content after placeholder replacement
+        print("Updated QSS content:")
+        print(qss)
+
+        # Apply the updated QSS to the QMessageBox
+        msg.setStyleSheet(qss)
+        print("QSS applied to QMessageBox.")
 
         msg.exec()

@@ -251,7 +251,6 @@ QPushButton {
     color: #00eaff;
     font-size: 18px;
     font-weight: bold;
-    transition: 200ms;
 }
 
 QPushButton:hover {
@@ -472,7 +471,6 @@ QLabel#BoardCell {
 /* Glow when active (you can toggle this dynamically) */
 QLabel#BoardCell:hover {
     border: 2px solid #ff4fff;
-    box-shadow: 0 0 12px #ff4fff;
 }
 
 /* Bottom turn display bar */
@@ -539,31 +537,21 @@ QFrame#TurnBar[role="p2"] QLabel#TurnLabel {
 /* ============================= */
 
 #WinnerMsgBox {
-    background-color: rgba(0, 0, 0, 180); /* dark overlay */
+    background-color: rgba(0, 0, 0, 180);
     border: 2px solid #FF00D4;
     border-radius: 18px;
     padding: 12px;
-
-    /* Background image */
-    border-image: url(./ui/assets/pop_up_win3.png) 0 0 0 0 stretch stretch;
-
-    /* Neon glow */
-    box-shadow: 0px 0px 20px #FF00D4;
+    border-image: url("PLACEHOLDER_WINNER_BG");
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
-/* Title text */
 #WinnerMsgBox QLabel {
-    color: #00EFFF;
+    color: #00F6FF;
     font-size: 22px;
     font-weight: bold;
-}
-
-/* Winner message text inside QMessageBox */
-QMessageBox QLabel {
-    color: #00F6FF;
-    font-size: 20px;
     background: transparent;
-    padding-top: 50px;   
+    padding-top: 50px;
 }
 
 /* ============================= */
@@ -583,7 +571,6 @@ QMessageBox QLabel {
 #WinnerOkBtn:hover {
     background-color: #00EFFF;
     color: #000A12;
-    border: 2px solid #00EFFF;
 }
 
 #WinnerOkBtn:pressed {

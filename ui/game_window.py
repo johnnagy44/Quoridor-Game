@@ -1,8 +1,8 @@
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QPushButton,QComboBox,
-    QCheckBox, QSpinBox, QFrame, QScrollArea
+    QWidget, QVBoxLayout, QLabel, QLineEdit, QHBoxLayout, QPushButton,
+     QFrame
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QTimer
+from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QPixmap, QPalette, QBrush
 import os
 
@@ -22,7 +22,7 @@ class GameWindow(QWidget):
         self.p2_name = "Player 2"
         self.time_limit = 0
         
-        img = os.path.join(resource_path(os.path.dirname(__file__)), "assets", "background.jpg")
+        img = resource_path(os.path.join(os.path.dirname(__file__), "assets", "background.jpg"))
         pix = QPixmap(img).scaled(
         self.size(),
         Qt.AspectRatioMode.KeepAspectRatioByExpanding,
@@ -182,15 +182,25 @@ class GameWindow(QWidget):
     def reset_game(self):
         index = self.stacked_widget.indexOf(self)
 
+        # Preserve AI settings
+        ai_enabled = self.ai is not None
+        difficulty = "Hard"  # Default to Hard if AI is enabled
+        if self.ai:
+            if self.ai.max_depth == 1:
+                difficulty = "Easy"
+            elif self.ai.max_depth == 2:
+                difficulty = "Medium"
+
+        board_size = self.board.size
+
         self.stacked_widget.removeWidget(self)
         self.deleteLater()
 
+        # Pass AI settings to the new GameWindow
         new_window = GameWindow(self.stacked_widget)
+        new_window.start_game(ai_enabled=ai_enabled, difficulty=difficulty, board_size=board_size)
 
         self.stacked_widget.insertWidget(index, new_window)
-        # Note: reset_game logic might need to be adjusted to preserve AI settings if desired,
-        # but for now we follow the existing pattern which resets to default.
-        
         self.stacked_widget.setCurrentIndex(index)
 
     def start_game(self, ai_enabled: bool, difficulty: str, board_size: int = 9):
@@ -209,6 +219,12 @@ class GameWindow(QWidget):
         self.game.players[0].name = self.p1_name
         self.game.players[1].name = self.p2_name
         
+        # Update player names based on AI state
+        if ai_enabled:
+            self.p2_name = "AI"
+        else:
+            self.p2_name = "Player 2"
+
         # Update UI labels
         self.p1_name_label.setText(self.p1_name)
         self.p2_name_label.setText(self.p2_name)
