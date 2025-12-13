@@ -7,6 +7,7 @@ from PyQt6.QtGui import QPixmap, QPalette, QBrush
 import os
 
 from .board_widget import BoardWidget
+from utils import resource_path
 from game.game_state import GameState
 from ai.ai import MinimaxAI
 
@@ -21,7 +22,7 @@ class GameWindow(QWidget):
         self.p2_name = "Player 2"
         self.time_limit = 0
         
-        img = os.path.join(os.path.dirname(__file__), "assets", "background.jpg")
+        img = os.path.join(resource_path(os.path.dirname(__file__)), "assets", "background.jpg")
         pix = QPixmap(img).scaled(
         self.size(),
         Qt.AspectRatioMode.KeepAspectRatioByExpanding,
