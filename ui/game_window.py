@@ -132,14 +132,21 @@ class GameWindow(QWidget):
         return bar
     
     def update_turn_bar(self):
-        current = self.board.game.current  # 0 or 1
+        if not hasattr(self, 'game') or not self.game:
+            return
+            
+        current = self.game.current  # 0 or 1
+        player = self.game.players[current]
 
         if current == 0:
             self.bottom_bar.setProperty("role", "p1")
-            self.turn_label.setText("Current Turn: Player 1")
+            self.turn_label.setText(f"Current Turn: {player.name}")
         else:
             self.bottom_bar.setProperty("role", "p2")
-            self.turn_label.setText("Current Turn: Player 2")
+            if getattr(player, 'is_ai', False):
+                self.turn_label.setText(f"{player.name} is thinking...")
+            else:
+                self.turn_label.setText(f"Current Turn: {player.name}")
 
         # Force stylesheet refresh
         self.turn_label.style().unpolish(self.turn_label)
