@@ -1,7 +1,7 @@
 import sys
 import os
 
-#for creating exe using PuInstaller
+#for creating exe using PyInstaller
 def resource_path(relative_path):
     try:
         base_path = sys._MEIPASS   # PyInstaller temp folder

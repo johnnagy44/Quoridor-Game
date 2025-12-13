@@ -125,7 +125,7 @@ class SetupWindow(QWidget):
         scroll_layout.addWidget(self.time_box)
 
         # ---- Board Size ----
-        bs_label = QLabel("setupField")
+        bs_label = QLabel("Board Size")
         bs_label.setObjectName("panelText")
         self.board_size_combo = QComboBox()
         self.board_size_combo.addItems(["9×9", "11×11", "13×13"])

@@ -7,6 +7,7 @@ from .main_menu import MainMenu
 from .how_to_play_window import HowToPlayWindow
 from .settings_window import SettingsWindow
 from .setup_window import SetupWindow
+from utils import resource_path
 
 
 class MainWindow(QWidget):
@@ -14,7 +15,7 @@ class MainWindow(QWidget):
         super().__init__()
         self.setObjectName("MainWindow")
         self.setWindowTitle("Quoridor Game")
-        self.setWindowIcon(QIcon("ui/assets/icon.ico"))
+        self.setWindowIcon(QIcon(resource_path("ui/assets/icon.ico")))
         self.setMinimumSize(1200, 800)
         self.resize(1200, 800)
         self.setContentsMargins(0, 0, 0, 0)
