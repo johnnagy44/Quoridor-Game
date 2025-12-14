@@ -453,21 +453,8 @@ class BoardWidget(QWidget):
 
         # Apply the updated QSS to the QMessageBox
         msg.setStyleSheet(qss)
-        print("Updated QSS applied to QMessageBox with resolved background image path.")
-
-        # Debug: Verify pixmap loading
-        if not os.path.exists(bg_path):
-            print("Background image not found at:", bg_path)
 
         # Disable window resizing
         msg.setFixedSize(400, 300)
-
-        # Debug: Verify QSS content after placeholder replacement
-        print("Updated QSS content:")
-        print(qss)
-
-        # Apply the updated QSS to the QMessageBox
-        msg.setStyleSheet(qss)
-        print("QSS applied to QMessageBox.")
 
         msg.exec()
