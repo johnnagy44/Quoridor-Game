@@ -145,6 +145,7 @@ class SetupWindow(QWidget):
         rules_title.setObjectName("rulesTitle")
 
         rules_text = QLabel(
+            "• Right click to add a wall\n"
             "• Each player starts with 10 walls\n"
             "• First player to reach the opposite side wins\n"
             "• Walls cannot completely block a player's path\n"
