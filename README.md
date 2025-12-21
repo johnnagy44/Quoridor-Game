@@ -268,7 +268,3 @@ Feel free to submit issues and pull requests to improve the game. Contributions 
 ## 📄 License
 
 This project is open-source and available under the MIT License.
-
----
-
-**Developed with ❤️ using Python, PyQt6, and strategic game design**
