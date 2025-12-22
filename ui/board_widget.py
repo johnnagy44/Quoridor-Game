@@ -4,19 +4,18 @@ from PyQt6.QtCore import Qt, QTimer,pyqtSignal
 import os
 from utils import resource_path
 
-# Removed fixed CELL size
 OFFSET_RATIO = 0.16
 WALL_THICK_RATIO = 0.16
 WALL_PREVIEW_ALPHA = 100
 WALL_GLOW_ALPHA = 120
 FLASH_DURATION_MS = 600
-HIT_MARGIN = 12  # pixels tolerance to click a wall band
+HIT_MARGIN = 12
 
-NEON_GRID = QColor(0, 234, 255)   # cyan neon
-NEON_P1 = QColor(0, 255, 255)     # cyan glow
-NEON_P2 = QColor(255, 0, 255)     # magenta glow
-NEON_WALL = QColor(255, 0, 150)   # pink wall
-BOARD_BG = QColor(0, 0, 0, 0)     # transparent
+NEON_GRID = QColor(0, 234, 255)
+NEON_P1 = QColor(0, 255, 255)
+NEON_P2 = QColor(255, 0, 255)
+NEON_WALL = QColor(255, 0, 150)
+BOARD_BG = QColor(0, 0, 0, 0)
 GRID_SHADOW = QColor(0, 120, 140, 180)
 
 
@@ -29,22 +28,18 @@ class BoardWidget(QWidget):
 
         self.game = game_state
         self.size = getattr(game_state.board, "size", None) or getattr(game_state, "size", 9)
-        self.setMinimumSize(400, 400) # Set a reasonable minimum size
+        self.setMinimumSize(400, 400)
 
-        # hover
         self.hover_row = None
         self.hover_col = None
-        self.wall_preview = None  # tuple (r,c,orient) or None
-        self.invalid_flash = None  # tuple (r,c,orient) being flashed red
+        self.wall_preview = None
+        self.invalid_flash = None
         self.setMouseTracking(True)
 
     @property
     def cell_size(self):
         return min(self.width(), self.height()) / self.size
 
-    # -------------------------------------------------
-    # PAINT EVENT
-    # -------------------------------------------------
     def paintEvent(self, event):
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing)
@@ -57,15 +52,9 @@ class BoardWidget(QWidget):
         self.draw_players(p)
         self.draw_invalid_flash(p)
 
-    # -------------------------------------------------
-    # DARK BACKGROUND
-    # -------------------------------------------------
     def draw_background(self, p: QPainter):
         p.fillRect(self.rect(), BOARD_BG)
 
-    # -------------------------------------------------
-    # NEON GRID
-    # -------------------------------------------------
     def draw_grid(self, p: QPainter):
         cs = self.cell_size
         for r in range(self.size):
@@ -73,17 +62,12 @@ class BoardWidget(QWidget):
                 x = c * cs
                 y = r * cs
 
-                # shadow under grid cell
                 p.setPen(QPen(GRID_SHADOW, 12))
                 p.drawRect(int(x), int(y), int(cs), int(cs))
 
-                # actual neon cell border
                 p.setPen(QPen(NEON_GRID, 2))
                 p.drawRect(int(x), int(y), int(cs), int(cs))
 
-    # -------------------------------------------------
-    # CELL HOVER GLOW
-    # -------------------------------------------------
     def draw_hover(self, p: QPainter):
         if self.hover_row is None:
             return
@@ -97,9 +81,6 @@ class BoardWidget(QWidget):
         p.setPen(Qt.PenStyle.NoPen)
         p.drawRect(int(x), int(y), int(cs), int(cs))
 
-    # -------------------------------------------------
-    # PLAYERS (NEON GLOWING)
-    # -------------------------------------------------
     def draw_players(self, p: QPainter):
         p.setPen(Qt.PenStyle.NoPen)
         cs = self.cell_size
@@ -127,9 +108,6 @@ class BoardWidget(QWidget):
         p.setBrush(QBrush(NEON_P2))
         p.drawEllipse(int(x), int(y), int(cs - 2*offset), int(cs - 2*offset))
 
-    # -------------------------------------------------
-    # NEON WALLS (PINK)
-    # -------------------------------------------------
     def draw_walls(self, p: QPainter):
         p.setPen(Qt.PenStyle.NoPen)
         glow = QColor(255, 0, 150, WALL_GLOW_ALPHA)
@@ -138,43 +116,30 @@ class BoardWidget(QWidget):
         cs = self.cell_size
         wall_thick = cs * WALL_THICK_RATIO
 
-        # draw horizontal walls from game.board.h_walls if present
-        h_walls = getattr(self.game.board, "h_walls", None)
-        if h_walls is not None:
-            for r in range(self.size - 1):
-                for c in range(self.size - 1):
-                    if h_walls[r][c]:
-                        x = c * cs
-                        y = (r + 1) * cs - wall_thick / 2
+        h_walls = self.game.board.h_walls
+        for r in range(self.size - 1):
+            for c in range(self.size - 1):
+                if h_walls[r][c]:
+                    x = c * cs
+                    y = (r + 1) * cs - wall_thick / 2
 
-                        # glow
-                        p.drawRect(int(x - 3), int(y - 3), int(cs * 2 + 6), int(wall_thick + 6))
+                    p.drawRect(int(x - 3), int(y - 3), int(cs * 2 + 6), int(wall_thick + 6))
+                    p.setBrush(QBrush(NEON_WALL))
+                    p.drawRect(int(x), int(y), int(cs * 2), int(wall_thick))
+                    p.setBrush(glow)
 
-                        # main neon
-                        p.setBrush(QBrush(NEON_WALL))
-                        p.drawRect(int(x), int(y), int(cs * 2), int(wall_thick))
+        v_walls = self.game.board.v_walls
+        for r in range(self.size - 1):
+            for c in range(self.size - 1):
+                if v_walls[r][c]:
+                    x = (c + 1) * cs - wall_thick / 2
+                    y = r * cs
 
-                        p.setBrush(glow)
+                    p.drawRect(int(x - 3), int(y - 3), int(wall_thick + 6), int(cs * 2 + 6))
+                    p.setBrush(QBrush(NEON_WALL))
+                    p.drawRect(int(x), int(y), int(wall_thick), int(cs * 2))
+                    p.setBrush(glow)
 
-        # vertical walls
-        v_walls = getattr(self.game.board, "v_walls", None)
-        if v_walls is not None:
-            for r in range(self.size - 1):
-                for c in range(self.size - 1):
-                    if v_walls[r][c]:
-                        x = (c + 1) * cs - wall_thick / 2
-                        y = r * cs
-
-                        p.drawRect(int(x - 3), int(y - 3), int(wall_thick + 6), int(cs * 2 + 6))
-
-                        p.setBrush(QBrush(NEON_WALL))
-                        p.drawRect(int(x), int(y), int(wall_thick), int(cs * 2))
-
-                        p.setBrush(glow)
-
-    # -------------------------------------------------
-    # WALL PREVIEW (on hover)
-    # -------------------------------------------------
     def draw_wall_preview(self, p: QPainter):
         if not self.wall_preview:
             return
@@ -197,9 +162,6 @@ class BoardWidget(QWidget):
             p.setPen(Qt.PenStyle.NoPen)
             p.drawRect(int(x), int(y), int(wall_thick), int(cs * 2))
 
-    # -------------------------------------------------
-    # INVALID FLASH (red) when trying to place an illegal wall
-    # -------------------------------------------------
     def draw_invalid_flash(self, p: QPainter):
         if not self.invalid_flash:
             return
@@ -219,9 +181,6 @@ class BoardWidget(QWidget):
             y = r * cs
             p.drawRect(int(x - 2), int(y - 2), int(wall_thick + 4), int(cs * 2 + 4))
 
-    # -------------------------------------------------
-    # MOUSE MOVEMENT: keeps hover + wall preview
-    # -------------------------------------------------
     def mouseMoveEvent(self, event):
         pos = event.position()
         cs = self.cell_size
@@ -231,9 +190,7 @@ class BoardWidget(QWidget):
         if 0 <= row < self.size and 0 <= col < self.size:
             self.hover_row = row
             self.hover_col = col
-            # update wall preview candidate
-            preview = self._detect_wall_near(pos.x(), pos.y())
-            self.wall_preview = preview
+            self.wall_preview = self._detect_wall_near(pos.x(), pos.y())
         else:
             self.hover_row = None
             self.hover_col = None
@@ -241,9 +198,6 @@ class BoardWidget(QWidget):
 
         self.update()
 
-    # -------------------------------------------------
-    # LEFT: pawn move
-    # -------------------------------------------------
     def mousePressEvent(self, event):
         pos = event.position()
         cs = self.cell_size
@@ -253,52 +207,22 @@ class BoardWidget(QWidget):
         if event.button() == Qt.MouseButton.LeftButton:
             self.try_pawn_move(row, col)
         elif event.button() == Qt.MouseButton.RightButton:
-            # attempt to place wall at currently previewed slot (if any)
             preview = self._detect_wall_near(pos.x(), pos.y())
             if preview:
                 r, c, orient = preview
                 self.try_place_wall(r, c, orient)
 
-    # -------------------------------------------------
-    # HELPERS: pawn move
-    # -------------------------------------------------
     def try_pawn_move(self, row, col):
-        current = getattr(self.game, "current", 0)
-        # expect game.legal_moves(player) -> set/list of (r,c)
-        legal = None
-        try:
-            legal = self.game.legal_moves(current)
-        except Exception:
-            # try alternate name
-            f = getattr(self.game, "get_legal_moves", None)
-            if f:
-                legal = f(current)
-        if legal is None:
-            print("WARNING: could not obtain legal moves from game; move won't be performed.")
-            return
+        current = self.game.current
+        legal = self.game.legal_moves(current)
 
         if (row, col) in legal:
-            # call move function
-            moved = False
-            for name in ("move_pawn", "movePawn", "move_player", "move_player_pawn"):
-                f = getattr(self.game, name, None)
-                if callable(f):
-                    try:
-                        try:
-                            f(current, row, col)
-                        except TypeError:
-                            f(row, col)
-                        moved = True
-                        self.moveMade.emit()
-                        # self.after_move_logic() - Handled by GameWindow via on_game_state_change
-                        break
-                    except Exception as e:
-                        print("Error calling", name, e)
-            if not moved:
-                print("WARNING: no move function found on game object. Tried move_pawn / movePawn etc.")
+            try:
+                self.game.move_pawn(current, row, col)
+                self.moveMade.emit()
+            except Exception as e:
+                print(f"Error calling move_pawn: {e}")
             self.update()
-        else:
-            pass
 
     # -------------------------------------------------
     # HELPERS: wall detection based on mouse position
@@ -322,7 +246,6 @@ class BoardWidget(QWidget):
         # horizontal wall is centered at y ~= CELL (bottom edge of cell)
         # It spans two cells horizontally: choose c such that wall occupies [c, c+1] columns.
         # Candidate c: col-1 or col depending where you clicked horizontally
-        # We'll attempt to compute closest horizontal wall slot
         # Horizontal candidate indices (r_h, c_h): r_h = row, c_h = col (or col-1)
         best = None
 
@@ -358,38 +281,19 @@ class BoardWidget(QWidget):
 
         return None
 
-    # -------------------------------------------------
-    # TRY PLACE WALL: calls your game's APIs if present.
-    # We'll attempt a small list of common method names for can_place & place_wall.
-    # If the game's API is missing, we print instructions so you can adapt quickly.
-    # -------------------------------------------------
-    # -------------------------------------------------
-    # TRY PLACE WALL
-    # -------------------------------------------------
     def try_place_wall(self, r, c, orient):
-        # 1) Direct call to GameState API
-        # GameState.try_place_wall(player_index, orientation, r, c) returns True/False
-        # validation, wall decrement, and turn switching happen inside GameState.
-        if hasattr(self.game, "try_place_wall") and hasattr(self.game, "current"):
-            # Ensure orientation is uppercase 'H' or 'V' as expected by GameState
-            orient_upper = orient.upper()
-            try:
-                success = self.game.try_place_wall(self.game.current, orient_upper, r, c)
-                if success:
-                    # Successful placement
-                    self.wall_preview = None
-                    self.moveMade.emit()
-                    self.update()
-                    return
-            except Exception as e:
-                print(f"Error calling try_place_wall: {e}")
-        
-        # If we reach here, placement failed or API missing
+        orient_upper = orient.upper()
+        try:
+            success = self.game.try_place_wall(self.game.current, orient_upper, r, c)
+            if success:
+                self.wall_preview = None
+                self.moveMade.emit()
+                self.update()
+                return
+        except Exception as e:
+            print(f"Error calling try_place_wall: {e}")
         self._flash_invalid_wall(r, c, orient)
 
-    # -------------------------------------------------
-    # Visual flash for invalid wall placement
-    # -------------------------------------------------
     def _flash_invalid_wall(self, r, c, orient):
         self.invalid_flash = (r, c, orient)
         self.update()
@@ -400,15 +304,8 @@ class BoardWidget(QWidget):
         self.update()
 
     def after_move_logic(self):
-        # Check for winner
         if self.game.get_winner() is not None:
             self.show_winner()
-            return
-
-        # If next player is AI
-        #if self.game.players[self.game.current].is_ai:
-        #    do_ai_turn()
-
 
     def show_winner(self):
         winner_index = self.game.get_winner()
@@ -421,40 +318,14 @@ class BoardWidget(QWidget):
         msg.setObjectName("WinnerMsgBox")
 
         msg.setWindowTitle("Game Over")
-
-        
         msg.setText(f"<div style='text-align:center; font-size:24px; font-weight:bold;'>"
                     f"🏆 {winner_name} wins! 🏆"
                     "</div>")
-
         
-        msg.setIcon(QMessageBox.Icon.NoIcon)
-
-        
+        msg.setIcon(QMessageBox.Icon.NoIcon) 
         msg.setStandardButtons(QMessageBox.StandardButton.Ok)
-
         ok_button = msg.button(QMessageBox.StandardButton.Ok)
         ok_button.setObjectName("WinnerOkBtn")
-        ok_button.setText("Continue")  
-
-        # Dynamically replace the placeholder in the QSS file with the correct path
-        qss_path = resource_path(os.path.join(os.path.dirname(__file__), "assets", "quoridor_neon.qss"))
-        with open(qss_path, "r") as file:
-            qss = file.read()
-
-        # Dynamically resolve the path to the background image
-        bg_path = resource_path(os.path.join(os.path.dirname(__file__), "assets", "pop_up_win3.png"))
-
-        # Ensure the path is relative for QSS compatibility
-        relative_bg_path = bg_path.replace("\\", "/")
-
-        # Replace the placeholder in the QSS file
-        qss = qss.replace("PLACEHOLDER_WINNER_BG", relative_bg_path)
-
-        # Apply the updated QSS to the QMessageBox
-        msg.setStyleSheet(qss)
-
-        # Disable window resizing
+        ok_button.setText("Continue")
         msg.setFixedSize(400, 300)
-
         msg.exec()
