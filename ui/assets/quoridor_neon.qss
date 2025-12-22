@@ -159,12 +159,12 @@ QSpinBox::down-button:pressed {
 QSpinBox::up-arrow{
     width: 10px;
     height: 10px;
-    image: url(./ui/assets/arrow-light-up.png);       /* replace with your white arrow icon */
+    image: url("PLACEHOLDER_ARROW_UP");
 }
 QSpinBox::down-arrow {
     width: 10px;
     height: 10px;
-    image: url(./ui/assets/arrow-light-down.png);       /* replace with your white arrow icon */
+    image: url("PLACEHOLDER_ARROW_DOWN");
 }
 
 
@@ -195,7 +195,7 @@ QComboBox#gridSizeCombo:hover {
 
 /* Arrow button */
 QComboBox#gridSizeCombo::down-arrow {
-    image: url(./ui/assets/arrow-light-down.png); 
+    image: url("PLACEHOLDER_ARROW_DOWN");
 }
 
 

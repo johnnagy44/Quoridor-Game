@@ -247,7 +247,6 @@ class GameWindow(QWidget):
         self.update_walls_labels()
         
         if self.game.winner is not None:
-            # Handle game over if needed (maybe show message)
             self.board.show_winner()
             
         # If AI is enabled and it is AI turn (player 1)

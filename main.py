@@ -1,7 +1,12 @@
 import sys
+import os
+import platform
+if platform.system() == "Windows":
+    import ctypes
+    
 from PyQt6.QtWidgets import QApplication,QStackedWidget
-import ctypes
 from PyQt6.QtGui import QIcon,QFontDatabase
+from PyQt6.QtCore import Qt
 from ui.main_window import MainWindow
 from utils import resource_path
 
@@ -15,12 +20,29 @@ def load_fonts():
 
 def load_styles(app):
     with open(resource_path("ui/assets/quoridor_neon.qss"), "r") as f:
-        app.setStyleSheet(f.read())
+        qss = f.read()
+    
+    # Replace placeholders with actual resource paths for PyInstaller compatibility
+    arrow_up_path = resource_path("ui/assets/arrow-light-up.png").replace("\\", "/")
+    arrow_down_path = resource_path("ui/assets/arrow-light-down.png").replace("\\", "/")
+    winner_bg_path = resource_path("ui/assets/pop_up_win3.png").replace("\\", "/")
+    
+    qss = qss.replace("PLACEHOLDER_ARROW_UP", arrow_up_path)
+    qss = qss.replace("PLACEHOLDER_ARROW_DOWN", arrow_down_path)
+    qss = qss.replace("PLACEHOLDER_WINNER_BG", winner_bg_path)
+    
+    app.setStyleSheet(qss)
 
 if __name__ == "__main__":
     
-    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("quoridor.game")
+    if platform.system() == "Windows":
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("quoridor.game")
+    
     app = QApplication(sys.argv)
+    
+    # dark theme
+    app.styleHints().setColorScheme(Qt.ColorScheme.Dark)
+    
     app.setWindowIcon(QIcon(resource_path("ui/assets/icon.ico")))
     load_fonts()
     load_styles(app)
