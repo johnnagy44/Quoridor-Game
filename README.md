@@ -1,85 +1,51 @@
 # Quoridor Game
 
-A Python implementation of the **Quoridor** board game using PyQt6 for the graphical user interface. Features a modern neon-themed UI, support for human vs AI gameplay, and strategic board mechanics.
+A Python implementation of the **Quoridor** board game using PyQt6 with a modern neon-themed UI.
+
+---
 
 ## 📋 Table of Contents
 
-- [Game Description](#game-description)
-- [Screenshots](#screenshots)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Running the Application](#running-the-application)
-- [Game Controls](#game-controls)
-- [Features](#features)
-- [Demo Video](#demo-video)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
-- [License](#license)
+- [Downloads](#-downloads)
+- [Demo Video](#-demo-video)
+- [Installation (For Developers)](#-installation-for-developers)
+- [Running the Application](#-running-the-application)
+- [Screenshots](#-screenshots)
+- [Game Description](#-game-description)
+- [Features](#-features)
+- [Game Controls](#-game-controls)
+- [Project Structure](#-project-structure)
+- [Contributing](#-contributing)
+- [License](#-license)
 
-## 🎮 Game Description
+---
 
-Quoridor is a strategic board game where two players race to reach the opposite side of a 9×9 grid while placing walls to block their opponent's path.
+## 📥 Downloads
 
-### Objective
+Download the standalone executable for your platform (no Python installation required):
 
-- **Player 1 (Cyan):** Start at the bottom center and reach the top row
-- **Player 2 (Magenta):** Start at the top center and reach the bottom row
-- First player to reach the opposite side wins!
+| Platform | Download Link |
+|----------|---------------|
+| **Windows-Version** | [Download for Windows](https://drive.google.com/drive/u/3/folders/1Zep3NTt-0zvZ1yizKgu8jdgrdo8MjuWA) |
+| **Linux-Version** | [Download for Linux](https://drive.google.com/drive/u/3/folders/1Kv25pD3CM3a6cVSJiSRmVRfu5u1dHpL6) |
 
-### Core Mechanics
+> Simply download and run - no installation needed!
 
-**Player Movement:**
+---
 
-- Move your pawn one square in any cardinal direction (up, down, left, right)
-- Jump over adjacent opponents (if you can move through)
-- Move diagonally around blocked opponents
+## 🎥 Demo Video
 
-**Wall Placement:**
+[▶️ Watch the Quoridor Game Demo](https://drive.google.com/drive/u/3/folders/18lqVWyoRwqdQNoWBYTV7BbtboGNJmVMM)
 
-- Each player starts with 10 walls
-- Walls span two adjacent cells (horizontal or vertical)
-- Walls cannot overlap
-- Walls cannot completely block a player's path to their goal
-- Place walls strategically to slow down your opponent
+_See the game in action with AI vs human gameplay_
 
-**Turn Structure:**
+---
 
-- Players alternate turns
-- Each turn: move your pawn OR place a wall
-- The game continues until one player reaches their goal
+## 🔧 Installation (For Developers)
 
-## 📸 Screenshots
-
-### Main Menu
-
-<img src="ui/assets/screenshots/main_menu.png" width="600" alt="Main Menu">
-
-_The welcoming main menu with options for New Game, How to Play, Settings, and Exit_
-
-### Game Setup
-
-<img src="ui/assets/screenshots/setup_screen.png" width="600" alt="Setup Screen">
-
-_Configure players, AI difficulty, board size, and time limits before starting_
-
-### Active Gameplay
-
-<img src="ui/assets/screenshots/gameplay.png" width="600" alt="Gameplay Board">
-
-_Neon-themed game board with player positions, available walls, and turn indicator_
-
-### Game Over Screen
-
-<img src="ui/assets/screenshots/victory_screen.png" width="600" alt="Victory Screen">
-
-_Celebration screen when a player reaches the opposite side_
-
-## 📦 Prerequisites
-
-- Python 3.8 or higher
-- pip (Python package installer)
-
-## 🔧 Installation
+### Prerequisites
+- Python 3.8+
+- pip
 
 ### Method 1: Using Virtual Environment (Recommended)
 
@@ -150,76 +116,85 @@ _Celebration screen when a player reaches the opposite side_
 
 The Quoridor game window should open, displaying the main menu.
 
-## 🎮 Game Controls
+---
 
-### Main Menu
+## 📸 Screenshots
 
-- **New Game**: Click to configure and start a new game
-- **How to Play**: View detailed rules and strategy tips
-- **Settings**: Customize game preferences and default settings
-- **Exit**: Close the application
+| Main Menu | Gameplay |
+|-----------|----------|
+| <img src="ui/assets/screenshots/main_menu.png" width="400" alt="Main Menu"> | <img src="ui/assets/screenshots/gameplay.png" width="400" alt="Gameplay"> |
 
-### Game Setup Screen
+| Setup Screen | Settings |
+|--------------|----------|
+| <img src="ui/assets/screenshots/setup_screen.png" width="400" alt="Setup"> | <img src="ui/assets/screenshots/settings_window.png" width="400" alt="Settings"> |
 
-- **Player Names**: Enter custom names for both players
-- **AI Opponent**: Toggle to enable/disable AI player for Player 2
-- **AI Difficulty**: Select from Easy, Medium, or Hard difficulty levels
-- **Board Size**: Choose from 9×9, 11×11, or 13×13 grids
-- **Time Limit**: Set optional time limit per move (0 for unlimited)
-- **Start Game**: Begin the match with selected settings
+| Victory Screen |
+|----------------|
+| <img src="ui/assets/screenshots/victory_screen.png" width="400" alt="Victory"> |
 
-### During Gameplay
+---
 
-**Pawn Movement:**
+## 🎮 Game Description
 
-- **Left Click** on an empty cell to move your pawn there
-- Your pawn can only move to legally adjacent squares
-- Valid moves are highlighted on hover
+Quoridor is a strategic board game where two players race to reach the opposite side of a 9×9 grid while placing walls to block their opponent's path.
 
-**Wall Placement:**
+### Objective
 
-- **Right Click** near the grid lines between cells to preview wall placement
-- Wall previews appear in semi-transparent pink
-- Release to place the wall if it's valid
-- Invalid placements flash red and are rejected
+- **Player 1 (Cyan):** Start at the bottom center and reach the top row
+- **Player 2 (Magenta):** Start at the top center and reach the bottom row
+- First player to reach the opposite side wins!
 
-**Game Actions:**
+### Core Rules
 
-- **Reset**: Clear the board and start a new game with same settings
-- **Menu**: Return to the main menu (ends current game)
+| Rule | Description |
+|------|-------------|
+| **Movement** | Move one square horizontally/vertically (not diagonally) |
+| **Walls** | Each player has 10 walls to place strategically |
+| **Jumping** | Jump over an adjacent opponent if unblocked |
+| **Path Requirement** | A path must always remain for each player to reach their goal |
 
-### Turn Indicator
-
-- **Bottom Bar** displays whose turn it is
-- Player colors: Cyan (Player 1) and Magenta (Player 2)
-- AI players show "thinking..." status during move calculation
-
-### Player Info Cards
-
-- **Left/Right sides** show player names and remaining walls
-- **Current goal** displayed for reference
-- Updates in real-time as walls are placed
+---
 
 ## ✨ Features
 
-- **Neon-Themed UI**: Modern cyan and magenta neon aesthetic
-- **Human vs Human**: Play with another person locally
-- **Human vs AI**: Challenge the computer with three difficulty levels:
-  - Easy: Shallow 1-level minimax search
-  - Medium: 2-level minimax search
-  - Hard: 3-level minimax search with alpha-beta pruning
-- **Responsive Board**: Dynamically scales to window size
-- **Wall Validation**: Ensures no player is completely blocked from their goal
-- **Customizable Games**: Adjust board size, player names, and time limits
-- **Settings Panel**: Save preferences for sound, move hints, and animations
-- **How to Play**: In-game guide with rules and strategy tips
-- **Real-time Feedback**: Wall placement preview and invalid move indicators
+- **Neon-Themed UI** — Modern cyan and magenta aesthetic
+- **Human vs Human** — Play locally with another person
+- **Human vs AI** — Three difficulty levels:
+  - Easy: 1-level minimax
+  - Medium: 2-level minimax
+  - Hard: 3-level minimax with alpha-beta pruning
+- **Responsive Board** — Dynamically scales to window size
+- **Wall Validation** — Ensures no player is completely blocked
+- **Customizable Games** — Board size (9×9, 11×11, 13×13), time limits
+- **Settings Panel** — Sound, move hints, animations preferences
+- **How to Play** — In-game guide with rules and strategy tips
 
-## 🎥 Demo Video
+---
 
-[Watch the Quoridor Game Demo](https://youtube.com/path-to-demo)
-_See the game in action with AI vs human gameplay_
+## 🎮 Game Controls
 
+### Main Menu
+- **New Game**: Configure and start a new game
+- **How to Play**: View rules and strategy tips
+- **Settings**: Customize preferences
+- **Exit**: Close the application
+
+### During Gameplay
+
+| Action | Control |
+|--------|---------|
+| Move Pawn | **Left Click** on valid cell |
+| Place Wall | **Right Click** near grid lines |
+| Reset Game | Click **Reset** button |
+| Return to Menu | Click **Menu** button |
+
+### Game Setup Options
+- Player names and AI toggle
+- AI difficulty (Easy/Medium/Hard)
+- Board size selection
+- Time limit per move
+
+---
 
 ## 📁 Project Structure
 
@@ -235,7 +210,7 @@ Quoridor-Game/
 │   ├── rules.py          # Game rules and legal moves
 │   └── pathfinding.py    # BFS pathfinding for wall validation
 ├── ai/                    # AI player implementation
-│   └── ai.py            # Minimax algorithm with alpha-beta pruning
+│   └── ai.py             # Minimax with alpha-beta pruning
 ├── ui/                    # User interface components
 │   ├── main_window.py    # Main window container
 │   ├── main_menu.py      # Main menu screen
@@ -243,27 +218,19 @@ Quoridor-Game/
 │   ├── game_window.py    # Main gameplay screen
 │   ├── board_widget.py   # Interactive game board
 │   ├── settings_window.py # Settings panel
-│   ├── how_to_play_window.py # Rules and help screen
-│   └── assets/           # Images, fonts, and stylesheets
-│       ├── quoridor_neon.qss      # Neon theme stylesheet
-│       ├── background.jpg         # UI background image
-│       ├── fonts/                 # Custom fonts
-│       └── icons/                 # Button icons
+│   ├── how_to_play_window.py # Rules and help
+│   └── assets/           # Images, fonts, stylesheets
 └── tests/                 # Unit tests
     └── test_board.py     # Board logic tests
 ```
 
-## 🎯 Game Rules Summary
-
-1. **Setup**: Place pawns at opposite centers, each player gets 10 walls
-2. **Turn**: Player either moves pawn one square OR places one wall
-3. **Movement**: Pawn moves to adjacent empty square (with jump rules)
-4. **Walls**: Block adjacent cells; cannot completely trap a player
-5. **Win**: First to reach opposite side of board wins
+---
 
 ## 🤝 Contributing
 
-Feel free to submit issues and pull requests to improve the game. Contributions are welcome!
+Feel free to submit issues and pull requests to improve the game!
+
+---
 
 ## 📄 License
 
